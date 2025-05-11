@@ -1,0 +1,48 @@
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Shopping_Laptop.Models; 
+using System.Diagnostics;
+
+public class HomeController : Controller
+{
+    private readonly ILogger<HomeController>
+    _logger;
+    private readonly IWebHostEnvironment _env; 
+
+    public HomeController(ILogger<HomeController>
+        logger, IWebHostEnvironment env) 
+        {
+        _logger = logger;
+        _env = env; 
+        }
+
+        
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+        var errorViewModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
+
+        // Lấy thông tin Exception nếu có
+        var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>
+            ();
+            if (exceptionHandlerPathFeature?.Error != null)
+            {
+            // Ghi log lỗi ở đây nếu cần
+            _logger.LogError(exceptionHandlerPathFeature.Error, "Unhandled exception for path {Path}", exceptionHandlerPathFeature.Path);
+            // (Optional) Truyền Exception vào ViewBag để hiển thị chi tiết ở Development
+            // if (_env.IsDevelopment())
+            // {
+            //     ViewBag.Exception = exceptionHandlerPathFeature.Error;
+            // }
+            }
+
+            // Truyền biến môi trường vào ViewBag
+            ViewBag.ASPNETCORE_ENVIRONMENT = _env.EnvironmentName;
+
+            // Xác định ShowRequestId dựa trên môi trường Development
+            errorViewModel.ShowRequestId = _env.IsDevelopment();
+
+            return View(errorViewModel);
+            }
+            }

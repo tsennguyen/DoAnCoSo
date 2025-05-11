@@ -1,0 +1,182 @@
+﻿@model IEnumerable<Shopping_Laptop.Models.ProductModel>
+
+@{
+    ViewData["Title"] = "Trang Chủ";
+}
+
+<div class="col-md-3 col-sm-12">
+    @Html.Partial("_SlidebarPartial")
+</div>
+
+<div class="col-md-9 col-sm-12">
+    <p>
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                <strong>Xin chào, Quản trị viên <span>@User.Identity.Name</span>!</strong>
+            }
+            else
+            {
+                <strong>Xin chào Quý Khách <span>@User.Identity.Name</span>!</strong>
+            }
+        }
+        else
+        {
+            <strong>Chào mừng đến với cửa hàng!</strong>
+        }
+        <span id="current-time" style="margin-left: 15px; font-weight: normal;"></span>
+    </p>
+
+    <div class="col-sm-12 padding-right">
+        <section id="slider" class="mb-4">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="slider-carousel" class="carousel slide" data-ride="carousel" data-interval="4000">
+                        <ol class="carousel-indicators"> <li data-target="#slider-carousel" data-slide-to="0" class="active"></li> <li data-target="#slider-carousel" data-slide-to="1"></li> <li data-target="#slider-carousel" data-slide-to="2"></li> </ol>
+                        <div class="carousel-inner"> <div class="item active"> <img src="https://dashboard.cellphones.com.vn/storage/iphone-16-pro-max-tang-airpods-4-home-19-3.jpg" class="img-responsive" alt="Slide 1" /> </div> <div class="item"> <img src="https://dashboard.cellphones.com.vn/storage/a56-a36-home-mua-kem.png" class="img-responsive" alt="Slide 2" /> </div> <div class="item"> <img src="https://dashboard.cellphones.com.vn/storage/pocket3-home.jpg" class="img-responsive" alt="Slide 3" /> </div> </div>
+                        <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev"> <i class="fa fa-angle-left"></i> </a> <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next"> <i class="fa fa-angle-right"></i> </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="features_items">
+            <h2 class="title text-center">Sản phẩm nổi bật</h2>
+
+            <div class="row d-flex flex-wrap">
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        @* Breakpoints: XL(6), L(4), M(3), S(2), XS(1) *@
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex">
+                            <div class="product-image-wrapper border rounded shadow-sm h-100 d-flex flex-column p-2">
+                                @* Padding tổng thể *@
+                                <div class="single-products text-center h-100 d-flex flex-column">
+                                    <div class="productinfo flex-grow-1">
+                                        <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id" class="text-dark text-decoration-none d-block">
+                                            @* Ảnh căn giữa, giới hạn chiều cao *@
+                                            <img src="~/media/products/@item.Image" alt="@item.Name" class="img-responsive mx-auto" style="height: 140px; width: auto; max-width: 100%; object-fit: contain; margin-bottom: 10px;" />
+                                            <h5 class="text-danger mt-2 fw-bold">@item.Price.ToString("N0") ₫</h5>
+                                            @* Giữ lại font-weight, giới hạn chiều cao để đều nhau *@
+                                            <p class="fw-semibold" style="min-height: 2.4em; line-height: 1.2em; max-height: 2.4em; overflow: hidden; margin-bottom: 0.5rem;">@item.Name</p>
+                                            @* Bỏ class small để chữ lớn hơn chút *@
+                                            <p class="text-muted mb-1">@item.Category?.Name</p>
+                                            <p class="text-muted">@item.Brand?.Name</p>
+                                        </a>
+                                    </div>
+
+                                    @* KHU VỰC NÚT NHẤT QUÁN - mt-auto đẩy xuống, pt-2 tạo khoảng cách trên *@
+                                    <div class="product-actions mt-auto text-center pt-2">
+                                        @if (item.Quantity > 0)
+                                        {
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-primary add-to-cart m-1" data-product_id="@item.Id" title="Thêm vào giỏ hàng">
+                                                <i class="fa fa-shopping-cart"></i> Thêm
+                                            </a>
+                                            <button class="btn btn-sm btn-danger add-btn-wishlist m-1" data-product_id="@item.Id" title="Yêu thích">
+                                                <i class="fa fa-heart"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-info add-btn-compare m-1" data-product_id="@item.Id" title="So sánh">
+                                                <i class="fa fa-exchange-alt"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            @* Sử dụng btn-light disabled để giống ảnh gốc hơn (nền xám nhạt) *@
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-light disabled m-1" title="Hết hàng">
+                                                <i class="fa fa-shopping-cart"></i> Hết hàng
+                                            </a>
+                                            <button class="btn btn-sm btn-danger disabled m-1" data-product_id="@item.Id" title="Yêu thích" disabled>
+                                                <i class="fa fa-heart"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-info disabled m-1" data-product_id="@item.Id" title="So sánh" disabled>
+                                                <i class="fa fa-exchange-alt"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-center col-12">Không có sản phẩm nào để hiển thị.</p>
+                } @* Thay col-xs-12 thành col-12 *@
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            // Script Add to Cart (như trước)
+             $('.add-to-cart').click(function (e) {
+                e.preventDefault(); var button = $(this); var Id = button.data("product_id"); button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+                $.ajax({
+                    type: "POST", url: '@Url.Action("Add", "Cart")', data: { Id: Id, quantity: 1 },
+                    success: function (response) { if (response.success) { Swal.fire({ icon: 'success', title: 'Thành công!', text: response.message || 'Đã thêm vào giỏ hàng.', timer: 1500, showConfirmButton: false }); } else { Swal.fire({ icon: 'error', title: 'Lỗi', text: response.message || 'Không thể thêm vào giỏ hàng.' }); } },
+                    error: function () { Swal.fire({ icon: 'error', title: 'Lỗi Hệ Thống', text: 'Lỗi kết nối. Vui lòng thử lại sau.' }); },
+                    complete: function() { button.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Thêm'); }
+                });
+            });
+            // Script Wishlist/Compare (như trước, dùng .not('.disabled'))
+             $('.add-btn-wishlist').not('.disabled').click(function(e){ e.preventDefault(); var productId = $(this).data("product_id"); Swal.fire({ icon: 'info', title: 'Thông báo', text: 'Chức năng Yêu thích đang được phát triển!' }); });
+             $('.add-btn-compare').not('.disabled').click(function(e){ e.preventDefault(); var productId = $(this).data("product_id"); Swal.fire({ icon: 'info', title: 'Thông báo', text: 'Chức năng So sánh đang được phát triển!' }); });
+        });
+    </script>
+
+    <!-- JS for Add to Yêu thích -->
+
+    <script>
+        $(document).ready(function () {
+            $('.add-btn-wishlist').click(function () {
+                var Id = $(this).data("product_id");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddWishlist", "Home")',
+                    data: { Id: Id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'Đã thêm vào Yêu thích', text: response.message });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra, vui lòng thử lại.' });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Không thể thêm vào yêu thích. Vui lòng thử lại sau.' });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- JS for Add to So Sánh -->
+
+    <script>
+        $(document).ready(function () {
+            $('.add-btn-compare').click(function () {
+                var Id = $(this).data("product_id");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddCompare", "Home")',
+                    data: { Id: Id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'Đã thêm vào so sánh', text: response.message });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra, vui lòng thử lại.' });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Không thể thêm vào so sánh. Vui lòng thử lại sau.' });
+                    }
+                });
+            });
+        });
+    </script>
+}
+

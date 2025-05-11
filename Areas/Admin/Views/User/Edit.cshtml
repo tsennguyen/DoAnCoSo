@@ -1,0 +1,74 @@
+﻿@model Shopping_Laptop.Models.AppUserModel
+@{
+    ViewData["Title"] = "Sửa Người Dùng";
+    // Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml"; // Đảm bảo Layout Admin
+}
+
+@* Thêm class "admin-edit-user-container" và giới hạn chiều rộng nếu muốn *@
+<div class="col-md-9 admin-edit-user-container mx-auto">
+    @* mx-auto để căn giữa nếu col-md-9 không chiếm hết *@
+
+    <h4 class="mb-4 section-title">@ViewData["Title"]: @Model.UserName</h4> @* Thêm tên user vào tiêu đề *@
+
+    <form asp-area="Admin" asp-controller="User" asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div> @* Thêm margin-bottom *@
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group mb-3">
+            @* Sử dụng mb-3 của Bootstrap *@
+            <label asp-for="UserName" class="form-label"></label> @* Dùng form-label *@
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Bỏ trống nếu không muốn thay đổi mật khẩu" />
+            @* Không cần validation cho password ở đây vì nó tùy chọn *@
+        </div>
+
+        <div class="form-group mb-4">
+            @* Tăng khoảng cách dưới cho select *@
+            <label asp-for="SelectedRoles" class="form-label"></label>
+            <select asp-for="SelectedRoles" asp-items="ViewBag.Roles" class="form-control roles-multi-select" multiple>
+                @* Thẻ option sẽ được render bởi asp-items *@
+            </select>
+            <small class="form-text text-muted">Giữ phím Ctrl (hoặc Command trên Mac) để chọn nhiều vai trò.</small>
+            @* Thêm validation nếu cần thiết cho Roles *@
+            @* <span asp-validation-for="SelectedRoles" class="text-danger"></span> *@
+        </div>
+
+        <div class="form-group mt-4 d-flex justify-content-between">
+            @* Dùng flex để đặt nút và link *@
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save me-1"></i> Cập Nhật
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fa fa-arrow-left me-1"></i> Trở lại Danh Sách
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @* Có thể thêm script cho thư viện Select2 hoặc Choices.js để cải thiện multi-select ở đây *@
+    @* <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> *@
+    @* <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> *@
+    @* <script> $(document).ready(function() { $('.roles-multi-select').select2(); }); </script> *@
+}

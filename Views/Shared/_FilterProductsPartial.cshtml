@@ -1,0 +1,133 @@
+﻿@{
+    var currentUrl = Url.ActionContext.HttpContext.Request.Path;
+    // Lấy các query param hiện tại để không bị mất khi sort/filter
+    var queryParams = Url.ActionContext.HttpContext.Request.Query;
+    var existingParams = new Dictionary<string, string>();
+    foreach (var key in queryParams.Keys)
+    {
+        if (!key.Equals("sort_by", StringComparison.OrdinalIgnoreCase) &&
+            !key.Equals("minPrice", StringComparison.OrdinalIgnoreCase) &&
+            !key.Equals("maxPrice", StringComparison.OrdinalIgnoreCase) &&
+            !key.Equals("locgia", StringComparison.OrdinalIgnoreCase)) // Bỏ qua các param sẽ thêm mới
+        {
+            existingParams.Add(key, queryParams[key]);
+        }
+    }
+
+    // Hàm helper để tạo URL với query params
+    Func<string, Dictionary<string, string>, string> BuildUrlWithParams = (baseUrl, parameters) =>
+    {
+        var builder = new System.Text.StringBuilder(baseUrl);
+        if (parameters.Any())
+        {
+            builder.Append(baseUrl.Contains("?") ? "&" : "?");
+            builder.Append(string.Join("&", parameters.Select(kvp => $"{System.Net.WebUtility.UrlEncode(kvp.Key)}={System.Net.WebUtility.UrlEncode(kvp.Value)}")));
+        }
+        return builder.ToString();
+    };
+
+    Func<string, string, string, string> BuildSortUrl = (sortKey, sortValue, baseUrl) =>
+    {
+        var urlParams = new Dictionary<string, string>(existingParams); // Sao chép các param hiện có
+        urlParams[sortKey] = sortValue;
+        return BuildUrlWithParams(baseUrl, urlParams);
+    };
+}
+
+@* Bỏ div.container ở đây *@
+<div class="row mb-4 align-items-end">
+    @* Thêm align-items-end để nút lọc thẳng hàng *@
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @* Bọc trong form-group *@
+            <label for="sort_by" class="small fw-semibold">Sắp xếp</label> @* Thêm label *@
+            <select class="form-control form-control-sm" id="sort_by">
+                @* Thêm form-control-sm *@
+                <option value="">Mặc định</option>
+                @* Sử dụng helper để giữ các query params khác *@
+                <option value="@BuildSortUrl("sort_by", "price_increase", currentUrl)">Giá tăng dần</option>
+                <option value="@BuildSortUrl("sort_by", "price_decrease", currentUrl)">Giá giảm dần</option>
+                <option value="@BuildSortUrl("sort_by", "price_newest", currentUrl)">Mới nhất</option>
+                <option value="@BuildSortUrl("sort_by", "price_oldest", currentUrl)">Cũ nhất</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <label class="small fw-semibold">Lọc theo giá</label> @* Label chung *@
+        @* Form để gửi giá min/max *@
+        <form method="get" action="@currentUrl" id="price-filter-form">
+            @* Thêm các input hidden cho các query param hiện có để không bị mất khi lọc giá *@
+            @foreach (var kvp in existingParams)
+            {
+                <input type="hidden" name="@kvp.Key" value="@kvp.Value" />
+            }
+            <div id="slider-range" style="margin-bottom: 10px;"></div>
+            <p style="margin-bottom: 5px;">
+                <label for="amount" class="small">Khoảng giá:</label>
+                <input type="text" id="amount" name="price_range" readonly style="border:0; color: #FE980F; font-weight:bold; width: 150px;"> @* Có thể bỏ name nếu chỉ dùng JS *@
+                @* Thêm input hidden để gửi giá trị min/max thực tế *@
+                <input type="hidden" id="minPrice" name="minPrice" />
+                <input type="hidden" id="maxPrice" name="maxPrice" />
+            </p>
+            <button type="submit" class="btn btn-sm btn-danger btn-locgia">Lọc Giá</button> @* btn-sm *@
+        </form>
+
+    </div>
+    @* Thêm một cột trống hoặc cột khác nếu cần để đủ 12 cột, hoặc để trống *@
+</div>
+
+@* --- SCRIPT CHO FILTER (thường đặt ở cuối trang hoặc section Scripts) --- *@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Phần Sort ---
+        const sortBySelect = document.getElementById('sort_by');
+        if(sortBySelect) {
+            sortBySelect.addEventListener('change', function() {
+                const selectedUrl = this.value;
+                if (selectedUrl) {
+                    window.location.href = selectedUrl;
+                }
+            });
+            // Đặt giá trị select trùng với query param hiện tại
+            const currentSort = new URLSearchParams(window.location.search).get('sort_by');
+             if (currentSort) {
+                for (let i = 0; i < sortBySelect.options.length; i++) {
+                    const optionUrl = sortBySelect.options[i].value;
+                     if (optionUrl && optionUrl.includes(`sort_by=${currentSort}`)) {
+                        sortBySelect.selectedIndex = i;
+                        break;
+                     }
+                 }
+             }
+        }
+
+        // --- Phần Price Slider ---
+        if (typeof $ !== 'undefined' && typeof $.ui !== 'undefined' && $('#slider-range').length > 0) {
+            // Lấy giá trị min/max từ URL nếu có
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentMinPrice = parseInt(urlParams.get('minPrice')) || 0;       // Giá min mặc định
+            const currentMaxPrice = parseInt(urlParams.get('maxPrice')) || 50000000; // Giá max mặc định (điều chỉnh nếu cần)
+            const globalMaxPrice = 50000000; // Giá trị max tối đa của slider (điều chỉnh nếu cần)
+
+            $("#slider-range").slider({
+                range: true,
+                min: 0,
+                max: globalMaxPrice,
+                values: [currentMinPrice, currentMaxPrice], // Đặt giá trị ban đầu
+                slide: function(event, ui) {
+                    $("#amount").val(ui.values[0].toLocaleString('vi-VN') + "₫ - " + ui.values[1].toLocaleString('vi-VN') + "₫");
+                     $("#minPrice").val(ui.values[0]); // Cập nhật input hidden
+                     $("#maxPrice").val(ui.values[1]); // Cập nhật input hidden
+                }
+            });
+            // Hiển thị giá trị ban đầu
+            $("#amount").val($("#slider-range").slider("values", 0).toLocaleString('vi-VN') + "₫ - " + $("#slider-range").slider("values", 1).toLocaleString('vi-VN') + "₫");
+            $("#minPrice").val($("#slider-range").slider("values", 0)); // Đặt giá trị hidden ban đầu
+            $("#maxPrice").val($("#slider-range").slider("values", 1)); // Đặt giá trị hidden ban đầu
+        }
+
+         // Có thể bạn muốn loại bỏ nút "Lọc Giá" và thực hiện lọc tự động khi slider dừng kéo (sự kiện 'stop' của slider)
+         // hoặc khi chọn sắp xếp, hoặc giữ nút lọc như hiện tại.
+
+    });
+</script>

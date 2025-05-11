@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên Hệ | Tcon-Shop</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="css/main.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container contact-page">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="contact-form">
+                    <h2 class="text-center">Liên Hệ</h2>
+                    <form id="main-contact-form" method="post">
+                        <div class="mb-3">
+                            <input type="text" name="name" class="form-control" required placeholder="Tên">
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" name="email" class="form-control" required placeholder="Email">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="subject" class="form-control" required placeholder="Chủ Đề">
+                        </div>
+                        <div class="mb-3">
+                            <textarea name="message" class="form-control" required rows="5" placeholder="Tin nhắn..."></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Gửi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info">
+                    <h2>Thông Tin Liên Hệ</h2>
+                    <p>@Html.Raw(@Model.Description)</p>
+                    <h5><b>Tên:</b> @Model.Name</h5>
+                    <h5><b>Email:</b> @Model.Email</h5>
+                    <h5><b>Số điện thoại:</b> @Model.Phone</h5>
+                    <div class="social-networks">
+                        <h2>Mạng Xã Hội</h2>
+                        <ul class="list-inline">
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="contact-map">
+                    @Html.Raw(@Model.Map)
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - Trang Chủ</title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link href="~/css/prettyPhoto.css" rel="stylesheet" />
+    <link href="~/css/price-range.css" rel="stylesheet" />
+    <link href="~/css/animate.css" rel="stylesheet" />
+    <link href="~/css/main.css" rel="stylesheet" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+    <link href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet" />
+
+    <style>
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            display: none;
+            position: absolute;
+            z-index: 1000;
+        }
+
+            .dropdown-menu a {
+                padding: 10px 15px;
+                color: #333;
+                font-size: 14px;
+                display: block;
+            }
+
+                .dropdown-menu a:hover {
+                    background-color: #f8f9fa;
+                    color: #007bff;
+                }
+
+        .dropdown-toggle::after {
+            content: none;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            cursor: pointer;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .header-top {
+            padding: 15px 0;
+            background-color: #f1f1f1;
+        }
+
+        .header-middle, .header-bottom {
+            padding: 20px 0;
+            background-color: #fff;
+        }
+
+        .navbar-header button {
+            background-color: transparent;
+            border: none;
+        }
+
+        .navbar-nav > li {
+            padding-left: 15px;
+        }
+
+        .footer-bottom {
+            padding: 10px 0;
+            background-color: #f8f9fa;
+        }
+
+        #footer {
+            margin-top: 40px;
+            background: #f8f9fa;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <div class="header_top">
+            <div class="container"> <div class="row"></div> </div>
+        </div>
+        <div class="header-middle">
+            <div class="container">
+                <div class="row align-items-center"> <div class="col-sm-4"> <div class="logo pull-left"> <a href="/"><img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/wysiwyg/HI.gif" alt="Logo" /></a> </div> </div> <div class="col-sm-8"> <div class="shop-menu pull-right"> <ul class="nav navbar-nav"> <li><a href="/Cart"><i class="fa fa-shopping-cart"></i> Giỏ Hàng</a></li> <li><a href="/Checkout"><i class="fa fa-crosshairs"></i> Thanh Toán</a></li> @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    <li><a href="@Url.Action("History", "Account")"><i class="fa fa-history"></i> Lịch Sử Đơn Hàng</a></li> <li><a href="@Url.Action("UpdateAccount", "Account")"><i class="fa fa-edit"></i> Cập Nhật TT TK</a></li> <li><a href="@Url.Action("Wishlist", "Home")"><i class="fa fa-heart"></i> Yêu Thích</a></li> <li><a href="@Url.Action("Compare", "Home")"><i class="fa fa-star"></i> So Sánh</a></li> <li><a href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out-alt"></i> Đăng Xuất</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Đăng Nhập</a></li>
+                                } </ul> </div> </div> </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container">
+                <div class="row"> <div class="col-sm-9"> <div class="navbar-header"> <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div> <div class="mainmenu pull-left"> <ul class="nav navbar-nav collapse navbar-collapse"> <li><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li> <li><a asp-controller="Home" asp-action="Contact">Liên Hệ</a></li> </ul> </div> </div> <div class="col-sm-3"> <form asp-controller="Product" asp-action="Search" method="get"> <div class="search_box pull-right"> <input type="text" name="searchTerm" placeholder="Tìm kiếm..." /> <button class="btn btn-warning" type="submit">Tìm</button> </div> </form> </div> </div>
+            </div>
+        </div>
+    </header>
+
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                @Html.Partial("_NotificationPartial")
+                @RenderBody()
+            </div>
+        </div>
+    </section>
+
+    <footer id="footer" class="pt-4">
+        <div class="container">
+            <div class="row"> <div class="col-sm-4"> <h4 class="text-warning">Đồ án Lập trình Web</h4> <p>Nhóm Sinh Viên:</p> <ul> <li>Nguyễn Việt Thành</li> <li>Nguyễn Quang Trung</li> <li>Nguyễn Hữu Trung</li> <li>Lê Phi Khánh</li> </ul> <p>GVHD: Thầy Lê Trung Hiếu - Lớp 22DTHB4</p> </div> <div class="col-sm-4"> <iframe width="100%" height="200" src="https://www.youtube.com/embed/abPmZCZZrFA?autoplay=1&mute=1&loop=1&playlist=abPmZCZZrFA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> <p class="text-center mt-2">Nguyễn Việt Thành</p> <h6 id="current-time" class="text-center text-warning"></h6> </div> <div class="col-sm-4"> <h5 class="text-center">Liên kết</h5> <ul class="list-inline text-center"> <li class="list-inline-item"><a href="https://facebook.com/hiimthanhh" target="_blank"><i class="fab fa-facebook fa-2x mx-2"></i></a></li> <li class="list-inline-item"><a href="#"><i class="fab fa-twitter fa-2x mx-2"></i></a></li> <li class="list-inline-item"><a href="#"><i class="fab fa-linkedin fa-2x mx-2"></i></a></li> </ul> </div> </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row"> <div class="col-sm-6"> <p class="pull-left mb-0">© @DateTime.Now.Year Đồ án Lập trình Web. All Rights Reserved.</p> </div> <div class="col-sm-6"> <p class="pull-right mb-0">Design by <span><a target="_blank">Tcon</a></span></p> </div> </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery.scrollUp.min.js"></script>
+    <script src="~/js/jquery.prettyPhoto.js"></script>
+    <script src="~/js/price-range.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
+    <script src="//cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+
+    <script>
+        $(function () { var message = '@TempData["success"]'; if (message && message !== '') { Swal.fire({ icon: "success", title: message, timer: 2000, showConfirmButton: false }); } function updateTime() { const now = new Date(); const time = now.toLocaleTimeString('vi-VN'); const date = now.toLocaleDateString('vi-VN'); const timeElements = document.querySelectorAll("#current-time"); timeElements.forEach(el => el.innerText = `${date} ${time}`); } setInterval(updateTime, 1000); updateTime(); });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

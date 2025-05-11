@@ -1,0 +1,27 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Lỗi Hệ Thống";
+}
+
+<h1 class="text-danger">Lỗi.</h1>
+<h2 class="text-danger">Đã xảy ra lỗi trong quá trình xử lý yêu cầu của bạn.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Mã yêu cầu (Request ID):</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<hr />
+<h3>Chế độ dành cho nhà phát triển (Development Mode)</h3>
+<p>
+    Chuyển sang môi trường <strong>Development</strong> sẽ hiển thị thông tin chi tiết hơn về lỗi xảy ra.
+</p>
+<p>
+    <strong>Không nên bật chế độ Development trên hệ thống đã triển khai thực tế.</strong>
+    Điều này có thể tiết lộ thông tin nhạy cảm từ lỗi hệ thống đến người dùng cuối.
+</p>
+<p>
+    Để bật chế độ Development khi chạy cục bộ, hãy đặt biến môi trường <strong>ASPNETCORE_ENVIRONMENT</strong> thành <code>Development</code> và khởi động lại ứng dụng.
+</p>

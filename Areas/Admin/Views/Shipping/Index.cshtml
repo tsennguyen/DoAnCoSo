@@ -1,0 +1,227 @@
+﻿@model ShippingModel 
+@{
+    ViewData["Title"] = "Quản lý Phí Vận Chuyển";
+    // Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml"; // Đảm bảo Layout Admin
+}
+
+<div class="admin-shipping-container my-4"> @* Container riêng *@
+    <h3 class="mb-4 section-title">@ViewData["Title"]</h3>
+
+    @* --- Phần Form Thêm Mới --- *@
+    <div class="add-shipping-form-section border rounded p-3 mb-4 bg-light">
+        <h5 class="mb-3 form-section-title">Thêm Phí Vận Chuyển Mới</h5>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        @* Chọn địa điểm dùng Bootstrap Grid *@
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="tinh" class="form-label form-label-sm">Tỉnh/Thành phố*</label>
+                <select class="form-select form-select-sm" id="tinh" name="tinh" required title="Chọn Tỉnh Thành">
+                    <option value="0" selected disabled>-- Chọn Tỉnh/Thành phố --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="quan" class="form-label form-label-sm">Quận/Huyện*</label>
+                <select class="form-select form-select-sm" id="quan" name="quan" required title="Chọn Quận Huyện">
+                    <option value="0" selected disabled>-- Chọn Quận/Huyện --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="phuong" class="form-label form-label-sm">Phường/Xã*</label>
+                <select class="form-select form-select-sm" id="phuong" name="phuong" required title="Chọn Phường Xã">
+                    <option value="0" selected disabled>-- Chọn Phường/Xã --</option>
+                </select>
+            </div>
+        </div>
+
+        @* Giá vận chuyển *@
+        <div class="row mb-3 align-items-end"> @* align-items-end để căn nút với input *@
+             <div class="col-md-8">
+                <label asp-for="Price" class="form-label form-label-sm">Giá Vận Chuyển (VNĐ)*</label>
+                @* Thêm type="number" và step/min nếu cần *@
+                <input asp-for="Price" id="price-shipping" class="form-control form-control-sm" required type="number" step="1000" min="0"/>
+                <span asp-validation-for="Price" class="text-danger"></span>
+             </div>
+             <div class="col-md-4"> @* Đặt nút Tạo trong cột riêng *@
+                <button type="button" class="btn btn-primary btn-sm w-100 btn-add-shipping">
+                    <i class="fa fa-plus me-1"></i> Tạo Phí Vận Chuyển
+                </button>
+             </div>
+        </div>
+    </div> @* --- Kết thúc Form Thêm Mới --- *@
+
+
+    @* --- Phần Danh Sách Hiện Có --- *@
+    <div class="shipping-list-section mt-5">
+        <h4 class="mb-3 section-subtitle">Danh sách Phí Vận Chuyển Hiện Có</h4>
+
+        @if (ViewBag.Shippings != null && ((IEnumerable<dynamic>)ViewBag.Shippings).Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle admin-table" id="shippingListTable"> @* ID mới *@
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Tỉnh/Thành Phố</th>
+                            <th scope="col">Quận/Huyện</th>
+                            <th scope="col">Phường/Xã</th>
+                            <th scope="col" class="text-end price-col">Giá Vận Chuyển</th> @* Thêm class + căn phải *@
+                            <th scope="col" class="text-center action-col">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var shipping in ViewBag.Shippings)
+                        {
+                            <tr>
+                                <td>@shipping.City</td>
+                                <td>@shipping.District</td>
+                                <td>@shipping.Ward</td>
+                                <td class="text-end price-col">@shipping.Price.ToString("N0") đ</td> @* Định dạng giá *@
+                                <td class="text-center action-col">
+                                    <a onclick="return confirm('Bạn có chắc chắn muốn xóa phí vận chuyển này?')"
+                                       href="@Url.Action("Delete", "Shipping", new { id = shipping.Id })"
+                                       class="btn btn-danger btn-sm" title="Xóa">
+                                         <i class="fa fa-trash"></i>
+                                    </a>
+                                    @* Có thể thêm nút Edit ở đây *@
+                                    @* <a href="@Url.Action("Edit", "Shipping", new { id = shipping.Id })" class="btn btn-warning btn-sm ms-1" title="Sửa"><i class="fa fa-edit"></i></a> *@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">Chưa có thông tin phí vận chuyển nào.</div>
+        }
+
+         @* Link quay lại (nếu cần, thường trang này là Index rồi) *@
+        @* <a asp-action="Index" asp-controller="Dashboard" class="btn btn-link mt-3">← Quay lại Dashboard</a> *@
+
+    </div> @* --- Kết thúc Danh Sách Hiện Có --- *@
+</div> @* End container *@
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> @* Thêm thư viện SweetAlert2 nếu chưa có trong layout *@
+    <script>
+        $(document).ready(function () {
+            // --- Add Shipping AJAX ---
+            $(".btn-add-shipping").click(function () {
+                var tinhId = $("#tinh").val();
+                var tinhText = $("#tinh option:selected").text();
+                var quanId = $("#quan").val();
+                var quanText = $("#quan option:selected").text();
+                var phuongId = $("#phuong").val();
+                var phuongText = $("#phuong option:selected").text();
+                var price = $("#price-shipping").val();
+                var addButton = $(this); // Lưu lại nút
+
+                // Validation cơ bản
+                if (tinhId === "0" || quanId === "0" || phuongId === "0" || !price || isNaN(price) || parseFloat(price) < 0) {
+                    Swal.fire({ icon: 'warning', title: 'Thông tin chưa hợp lệ', text: 'Vui lòng chọn đầy đủ địa chỉ và nhập giá vận chuyển hợp lệ (số dương).' });
+                    return;
+                }
+
+                // Trạng thái loading cho nút
+                addButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Đang xử lý...');
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("StoreShipping", "Shipping")", // Đảm bảo Action và Controller đúng
+                    data: { tinh: tinhText, quan: quanText, phuong: phuongText, price: price },
+                    success: function (result) {
+                        if (result.success) {
+                            Swal.fire({ icon: 'success', title: 'Thành công!', text: 'Thêm phí vận chuyển thành công.', timer: 1500, showConfirmButton: false });
+
+                            // Định dạng giá tiền cho hiển thị
+                            const formattedPrice = parseInt(price).toLocaleString('vi-VN');
+
+                            // Thêm dòng mới vào bảng (đảm bảo cấu trúc HTML khớp)
+                            $("#shippingListTable tbody").append(`
+                                <tr>
+                                    <td>${tinhText}</td>
+                                    <td>${quanText}</td>
+                                    <td>${phuongText}</td>
+                                    <td class="text-end price-col">${formattedPrice} đ</td>
+                                    <td class="text-center action-col">
+                                        <a onclick="return confirm('Bạn có chắc chắn muốn xóa phí vận chuyển này?')"
+                                           href="@Url.Action("Delete", "Shipping")?id=${result.id}"
+                                           class="btn btn-danger btn-sm" title="Xóa">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            `);
+                            // Reset form (tùy chọn)
+                             $("#tinh").val("0");
+                             $("#quan").html('<option value="0" selected disabled>-- Chọn Quận/Huyện --</option>');
+                             $("#phuong").html('<option value="0" selected disabled>-- Chọn Phường/Xã --</option>');
+                             $("#price-shipping").val('');
+
+                        } else if (result.duplicate) {
+                            Swal.fire({ icon: 'error', title: 'Thất bại!', text: 'Phí vận chuyển cho địa chỉ này đã tồn tại.' });
+                        } else {
+                             Swal.fire({ icon: 'error', title: 'Thất bại!', text: result.message || 'Có lỗi xảy ra, vui lòng thử lại.' });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Lỗi Kết Nối', text: 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại.' });
+                    },
+                    complete: function() {
+                        // Reset nút về trạng thái ban đầu
+                        addButton.prop('disabled', false).html('<i class="fa fa-plus me-1"></i> Tạo Phí Vận Chuyển');
+                    }
+                });
+            }); // End Add Shipping Click
+
+            // --- Load Address Dropdowns (Improved) ---
+            function loadDistricts(provinceId) {
+                $("#quan").empty().append('<option value="0" selected disabled>-- Chọn Quận/Huyện --</option>');
+                $("#phuong").empty().append('<option value="0" selected disabled>-- Chọn Phường/Xã --</option>');
+                if (provinceId && provinceId !== "0") { // Chỉ gọi API nếu có ID tỉnh hợp lệ
+                    $.getJSON('https://esgoo.net/api-tinhthanh/2/' + provinceId + '.htm', function (data_quan) {
+                        if (data_quan.error == 0) {
+                            $.each(data_quan.data, function (key, val) {
+                                $("#quan").append('<option value="' + val.id + '">' + val.full_name + '</option>');
+                            });
+                        } else { console.error("API Error (Districts):", data_quan.error_text); }
+                    }).fail(function() { console.error("Failed to load districts."); });
+                }
+            }
+
+            function loadWards(districtId) {
+                $("#phuong").empty().append('<option value="0" selected disabled>-- Chọn Phường/Xã --</option>');
+                if (districtId && districtId !== "0") { // Chỉ gọi API nếu có ID quận hợp lệ
+                    $.getJSON('https://esgoo.net/api-tinhthanh/3/' + districtId + '.htm', function (data_phuong) {
+                        if (data_phuong.error == 0) {
+                            $.each(data_phuong.data, function (key, val) {
+                                $("#phuong").append('<option value="' + val.id + '">' + val.full_name + '</option>');
+                            });
+                        } else { console.error("API Error (Wards):", data_phuong.error_text); }
+                    }).fail(function() { console.error("Failed to load wards."); });
+                }
+            }
+
+            // Load initial provinces
+            $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+                if (data_tinh.error == 0) {
+                    var tinhSelect = $("#tinh");
+                    tinhSelect.empty().append('<option value="0" selected disabled>-- Chọn Tỉnh/Thành phố --</option>');
+                    $.each(data_tinh.data, function (key, val) {
+                        tinhSelect.append('<option value="' + val.id + '">' + val.full_name + '</option>');
+                    });
+                } else { console.error("API Error (Provinces):", data_tinh.error_text); }
+            }).fail(function() { console.error("Failed to load provinces."); });
+
+            // Event listeners for dropdown changes
+            $("#tinh").change(function () { loadDistricts($(this).val()); });
+            $("#quan").change(function () { loadWards($(this).val()); });
+
+        }); // End Document Ready
+    </script>
+}

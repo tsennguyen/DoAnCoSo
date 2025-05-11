@@ -1,0 +1,52 @@
+﻿@model IEnumerable<AppUserModel>
+@{
+    ViewData["Title"] = "User List";
+    Paginate pager = ViewBag.Pager ?? new Paginate();
+    int pageNo = pager.CurrentPage;
+}
+<link href="~/css/admin.css" rel="stylesheet" asp-append-version="true" />
+
+<h3>User List</h3>
+<a asp-area="Admin" asp-controller="User" asp-action="Create" class="btn btn-primary">Add User</a>
+
+<table class="table" id=" myTable">
+    <thead>
+        <tr>
+            <th scope="col">User Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">PasswordHash</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Roles</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.PasswordHash</td>
+                <td>@user.PhoneNumber</td>
+                <td>@string.Join(", ", user.SelectedRoles)</td>
+                <td>
+                    <form asp-area="Admin" asp-controller="User" asp-action="Delete" method="post" style="display:inline-block;">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                    <form asp-area="Admin" asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" method="get" style="display:inline-block;">
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+    <partial name="_paging" model="@pager" />
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

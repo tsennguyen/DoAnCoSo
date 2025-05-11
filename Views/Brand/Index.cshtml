@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Shopping_Laptop.Models.ProductModel>
+
+<div class="col-sm-3">
+    @Html.Partial("_SlidebarPartial") <!-- Menu danh mục hoặc bộ lọc -->
+</div>
+
+<div class="col-sm-9 padding-right">
+    <div class="features_items">
+        <!-- Tiêu đề sản phẩm -->
+        <h2 class="title text-center">Sản phẩm nổi bật</h2>
+
+        @if (!Model.Any())
+        {
+            <p class="text-center text-muted">Hiện chưa có sản phẩm nào trong mục này.</p>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div class="col-sm-4 mb-4">
+                    <div class="product-image-wrapper border rounded p-2 shadow-sm">
+                        <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                            <div class="single-products">
+                                <div class="productinfo text-center">
+                                    <img src="~/images/@item.Image" alt="@item.Name" width="100%" style="height: 220px; object-fit: contain;" />
+                                    <h5 class="mt-2 text-danger fw-bold">@item.Price.ToString("#,##0") ₫</h5>
+                                    <p class="mb-1 fw-semibold">@item.Name</p>
+                                    <p class="mb-1 text-muted">Danh mục: @item.Category?.Name</p>
+                                    <p class="mb-1 text-muted">Thương hiệu: @item.Brand?.Name</p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="choose mt-2">
+                            <ul class="nav nav-pills nav-justified small">
+                                <li>
+                                    <a href="#"><i class="fa fa-heart text-danger"></i> Yêu thích</a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="fa fa-exchange"></i> So sánh</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

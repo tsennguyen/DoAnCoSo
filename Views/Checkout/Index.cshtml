@@ -1,0 +1,241 @@
+﻿@* @model CheckoutViewModel - Giả sử bạn có một ViewModel cho trang này *@
+@{
+    ViewData["Title"] = "Thanh Toán";
+    // Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo layout được áp dụng
+}
+
+<section class="checkout-container my-4">
+    @* Thêm class và khoảng cách *@
+    <div class="container">
+        @* Giữ container của Bootstrap *@
+
+        @* Bỏ breadcrumbs vì thường layout đã có *@
+
+        @* -- Bước 1: Tùy chọn Đăng nhập/Khách -- *@
+        <div class="checkout-section checkout-options-section mb-4">
+            <h2 class="section-title">Bước 1: Tùy chọn Thanh toán</h2>
+            <div class="options-content p-3 border rounded bg-light">
+                <p>Vui lòng đăng nhập hoặc chọn thanh toán với tư cách khách.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    @* Dùng flexbox cho các lựa chọn *@
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="checkoutOption" id="optionRegister" value="register">
+                        <label class="form-check-label" for="optionRegister">
+                            Đăng ký tài khoản mới
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="checkoutOption" id="optionGuest" value="guest" checked> @* Mặc định chọn khách *@
+                        <label class="form-check-label" for="optionGuest">
+                            Thanh toán với tư cách khách
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="checkoutOption" id="optionLogin" value="login">
+                        <label class="form-check-label" for="optionLogin">
+                            Đăng nhập (Nếu đã có tài khoản)
+                        </label>
+                    </div>
+                    @* Nút hủy bỏ không cần thiết ở đây *@
+                </div>
+            </div>
+        </div>
+
+        @* -- Bước 2: Thông tin Thanh toán & Giao hàng -- *@
+        @* Giữ cấu trúc row/col nhưng dùng class rõ hơn *@
+        <div class="checkout-section billing-shipping-section mb-4">
+            <h2 class="section-title">Bước 2: Thông tin Thanh toán & Giao hàng</h2>
+            <div class="row g-4">
+                @* Thêm khoảng cách giữa các cột (gutter) *@
+                @* Cột Thông tin khách hàng / Đăng ký (Nếu chọn option tương ứng) *@
+                @* <div class="col-md-4">
+                     <div class="shopper-info-box p-3 border rounded">
+                         <p class="box-title">Thông tin Người mua</p>
+                         <form>
+                             <div class="mb-3"><input type="text" class="form-control form-control-sm" placeholder="Họ và Tên*"></div>
+                             <div class="mb-3"><input type="email" class="form-control form-control-sm" placeholder="Email*"></div>
+                             <div class="mb-3"><input type="tel" class="form-control form-control-sm" placeholder="Số điện thoại*"></div>
+                             <!-- Thêm các trường đăng ký nếu cần -->
+                             <button type="button" class="btn btn-primary btn-sm">Lưu thông tin</button>
+                         </form>
+                     </div>
+                 </div> *@
+
+                @* Cột Địa chỉ Thanh toán & Giao hàng *@
+                <div class="col-md-8">
+                    @* Giả sử cột này chiếm nhiều không gian hơn *@
+                    <div class="billing-address-box p-3 border rounded">
+                        <p class="box-title">Địa chỉ Thanh toán & Giao hàng</p>
+                        <form class="row g-3">
+                            @* Form với layout grid *@
+                            <div class="col-md-6">
+                                <label for="checkoutFirstName" class="form-label form-label-sm">Tên*</label>
+                                <input type="text" class="form-control form-control-sm" id="checkoutFirstName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkoutLastName" class="form-label form-label-sm">Họ*</label>
+                                <input type="text" class="form-control form-control-sm" id="checkoutLastName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkoutEmail" class="form-label form-label-sm">Email*</label>
+                                <input type="email" class="form-control form-control-sm" id="checkoutEmail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkoutPhone" class="form-label form-label-sm">Số điện thoại*</label>
+                                <input type="tel" class="form-control form-control-sm" id="checkoutPhone" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="checkoutAddress1" class="form-label form-label-sm">Địa chỉ*</label>
+                                <input type="text" class="form-control form-control-sm" id="checkoutAddress1" placeholder="Số nhà, tên đường, phường/xã..." required>
+                            </div>
+                            <div class="col-12">
+                                <label for="checkoutAddress2" class="form-label form-label-sm">Địa chỉ phụ (Tùy chọn)</label>
+                                <input type="text" class="form-control form-control-sm" id="checkoutAddress2" placeholder="Tòa nhà, tầng, số phòng...">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkoutCountry" class="form-label form-label-sm">Quốc gia*</label>
+                                <select id="checkoutCountry" class="form-select form-select-sm" required>
+                                    <option selected disabled value="">Chọn...</option>
+                                    <option>Việt Nam</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkoutCity" class="form-label form-label-sm">Tỉnh / Thành phố*</label>
+                                <select id="checkoutCity" class="form-select form-select-sm" required>
+                                    <option selected disabled value="">Chọn...</option>
+                                    <option>Hà Nội</option>
+                                    <option>TP. Hồ Chí Minh</option>
+                                    <option>Đà Nẵng</option>
+                                    @* Thêm các tỉnh thành khác *@
+                                </select>
+                            </div>
+                            @* <div class="col-md-4">
+                                <label for="checkoutZip" class="form-label form-label-sm">Mã bưu chính</label>
+                                <input type="text" class="form-control form-control-sm" id="checkoutZip">
+                            </div> *@
+                            <div class="col-12">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="sameAddressCheck" checked>
+                                    <label class="form-check-label form-label-sm" for="sameAddressCheck">
+                                        Địa chỉ giao hàng giống địa chỉ thanh toán
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @* Cột Ghi chú đơn hàng *@
+                <div class="col-md-4">
+                    <div class="order-notes-box p-3 border rounded h-100">
+                        @* Thêm h-100 *@
+                        <p class="box-title">Ghi chú Đơn hàng</p>
+                        <textarea name="message" class="form-control form-control-sm" placeholder="Ghi chú cho người giao hàng (nếu có)..." rows="8"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @* -- Bước 3: Xem lại Giỏ hàng -- *@
+        <div class="checkout-section review-cart-section mb-4">
+            <h2 class="section-title">Bước 3: Xem lại Giỏ hàng</h2>
+            <div class="table-responsive cart-summary-table">
+                @* Thêm class riêng *@
+                <table class="table table-bordered table-hover">
+                    @* Dùng table-hover *@
+                    <thead class="table-light">
+                        @* Header màu sáng hơn *@
+                        <tr>
+                            <th class="image">Sản phẩm</th>
+                            <th class="description">Mô tả</th>
+                            <th class="price text-end">Giá</th>
+                            <th class="quantity text-center">Số lượng</th>
+                            <th class="total text-end">Thành tiền</th>
+                            @* Bỏ cột nút xóa ở đây, quản lý trong trang giỏ hàng *@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @* --- Dòng sản phẩm mẫu (Lặp lại bằng C#) --- *@
+                        <tr>
+                            <td class="cart-product-image">
+                                <a href="#"><img src="images/cart/one.png" alt="" width="60"></a> @* Đặt width nhỏ *@
+                            </td>
+                            <td class="cart-product-description">
+                                <h4 class="product-name"><a href="#">Tên Sản Phẩm Mẫu</a></h4>
+                                <p class="product-id">ID: 1089772</p>
+                            </td>
+                            <td class="cart-price text-end">
+                                <p>590.000 ₫</p>
+                            </td>
+                            <td class="cart-quantity text-center">
+                                <div class="cart_quantity_button">
+                                    @* Giữ lại cấu trúc nút nếu có logic JS *@
+                                    @* <a class="cart_quantity_up" href=""> + </a> *@
+                                    <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2" disabled> @* Disable ở trang checkout *@
+                                    @* <a class="cart_quantity_down" href=""> - </a> *@
+                                </div>
+                            </td>
+                            <td class="cart-total text-end">
+                                <p class="cart_total_price">590.000 ₫</p>
+                            </td>
+                        </tr>
+                        @* --- Kết thúc dòng sản phẩm mẫu --- *@
+
+                        @* --- Dòng tổng cộng --- *@
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold">Tổng cộng Giỏ hàng:</td>
+                            <td class="text-end fw-bold cart_total_price">590.000 ₫</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-end">Phí vận chuyển:</td>
+                            <td class="text-end cart_total_price">Miễn phí</td> @* Hoặc tính toán *@
+                        </tr>
+                        <tr class="table-primary">
+                            @* Highlight dòng tổng cuối *@
+                            <td colspan="4" class="text-end fw-bold fs-5">Tổng Thanh Toán:</td>
+                            <td class="text-end fw-bold fs-5 cart_total_price">590.000 ₫</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @* -- Bước 4: Chọn Phương thức Thanh toán -- *@
+        <div class="checkout-section payment-method-section mb-4">
+            <h2 class="section-title">Bước 4: Chọn Phương thức Thanh toán</h2>
+            <div class="payment-methods-list p-3 border rounded bg-light">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="paymentBank" value="bank">
+                    <label class="form-check-label" for="paymentBank">
+                        <i class="fas fa-university me-2"></i> Chuyển khoản Ngân hàng
+                    </label>
+                    @* Có thể thêm mô tả nhỏ bên dưới nếu cần *@
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="paymentCOD" value="cod" checked>
+                    <label class="form-check-label" for="paymentCOD">
+                        <i class="fas fa-truck me-2"></i> Thanh toán khi nhận hàng (COD)
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMomo" value="momo">
+                    <label class="form-check-label" for="paymentMomo">
+                        <img src="~/images/momo_logo.png" height="20" class="me-2" alt="Momo" /> Thanh toán qua Ví Momo
+                    </label>
+                </div>
+                @* Thêm các phương thức khác nếu có *@
+            </div>
+        </div>
+
+        @* -- Nút Đặt hàng -- *@
+        <div class="text-end mt-4">
+            @* Căn phải *@
+            <button type="submit" class="btn btn-success btn-lg place-order-btn">
+                @* Nút to hơn *@
+                <i class="fas fa-check-circle me-2"></i> Đặt Hàng
+            </button>
+        </div>
+
+    </div>
+</section>

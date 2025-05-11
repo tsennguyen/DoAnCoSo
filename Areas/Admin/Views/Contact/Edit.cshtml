@@ -1,0 +1,62 @@
+﻿@model ContactModel
+@{
+    ViewData["Title"] = "Chỉnh Sửa Thông Tin Liên Hệ";
+}
+
+<h4>Chỉnh Sửa Thông Tin Liên Hệ</h4>
+<div class="col-md-9">
+    <form asp-action="Edit" asp-controller="Contact" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="Name">Tên liên hệ</label>
+            <input asp-for="Name" class="form-control" placeholder="Nhập tên liên hệ" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input asp-for="Email" class="form-control" placeholder="example@gmail.com" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Phone">Số điện thoại</label>
+            <input asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Map">Bản đồ (iframe)</label>
+            <textarea asp-for="Map" class="form-control" placeholder="Nhúng iframe bản đồ Google Maps"></textarea>
+            <span asp-validation-for="Map" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Description">Mô tả</label>
+            <textarea asp-for="Description" class="form-control" placeholder="Mô tả chi tiết về thông tin liên hệ"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="ImageUpload">Logo / Hình ảnh đại diện</label>
+            <input asp-for="ImageUpload" class="form-control" />
+            <span asp-validation-for="ImageUpload" class="text-danger"></span>
+            <div class="mt-2">
+                <strong>Hình ảnh hiện tại:</strong><br />
+                <img src="~/media/logo/@Model.LogoImg" width="120" />
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+        </div>
+    </form>
+
+    <a asp-action="Index" class="btn btn-link">← Quay lại danh sách liên hệ</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

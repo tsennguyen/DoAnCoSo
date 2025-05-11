@@ -1,0 +1,27 @@
+﻿@using Shopping_Laptop.Models.Momo
+@model MomoExecuteResponseModel
+
+@{
+    ViewData["Title"] = "Xác Nhận Thanh Toán Momo";
+}
+<div class="payment-success-container text-center">
+    @* Thêm class và căn giữa *@
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i> @* Thêm icon thành công *@
+    </div>
+    <h3 class="payment-title">Thanh Toán MOMO Thành Công!</h3> @* Dùng h3 cho tiêu đề chính *@
+
+    <div class="order-details-summary">
+        <h5>Thanh Toán MOMO Thành Công Với : </h5>
+        <h6>Mã Đơn Hàng : @Model.OrderId  </h6>
+        <h6>Tên Khách Hàng : @Model.OrderInfo  </h6>
+        <h6>Tổng Tiền : @Model.Amount  </h6>
+
+    </div>
+
+    <div class="action-links mt-4">
+        @* Bọc link hành động *@
+        <a asp-controller="Account" asp-action="History" class="btn btn-outline-primary">Xem Lịch Sử Đơn Hàng</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary ms-2">Tiếp Tục Mua Sắm</a> @* Thêm nút quay lại mua sắm *@
+    </div>
+</div>

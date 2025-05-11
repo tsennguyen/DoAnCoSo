@@ -1,0 +1,76 @@
+﻿@model AppUserModel
+@{
+    ViewData["Title"] = "Tạo Người Dùng Mới"; // Tiêu đề rõ ràng hơn
+    // Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml"; // Đảm bảo Layout Admin
+}
+
+@* Thêm class "admin-create-user-container" và giới hạn chiều rộng nếu muốn *@
+<div class="col-md-9 admin-create-user-container mx-auto">
+    @* mx-auto để căn giữa *@
+
+    <h4 class="mb-4 section-title">@ViewData["Title"]</h4>
+
+    <form asp-area="Admin" asp-controller="User" asp-action="Create" method="post">
+        @* Hiển thị lỗi tổng hợp ở trên cùng *@
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        @* Username *@
+        <div class="form-group mb-3">
+            @* Dùng mb-3 *@
+            <label asp-for="UserName" class="form-label"></label> @* Dùng form-label *@
+            <input asp-for="UserName" class="form-control" required /> @* Thêm required nếu bắt buộc *@
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        @* Email *@
+        <div class="form-group mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" required type="email" /> @* Thêm type="email" và required *@
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        @* PhoneNumber *@
+        <div class="form-group mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" required /> @* Thêm required *@
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        @* Password *@
+        <div class="form-group mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input asp-for="Password" class="form-control" required type="password" /> @* Thêm required *@
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        @* Roles *@
+        <div class="form-group mb-4">
+            <label asp-for="SelectedRoles" class="form-label"></label>
+            <select asp-for="SelectedRoles" class="form-control roles-multi-select" asp-items="ViewBag.Roles" multiple>
+                @* Options được render bởi asp-items *@
+            </select>
+            <small class="form-text text-muted">Giữ phím Ctrl (hoặc Command trên Mac) để chọn nhiều vai trò.</small>
+            <span asp-validation-for="SelectedRoles" class="text-danger"></span>
+        </div>
+
+        @* Nút Submit và Quay lại *@
+        <div class="form-group mt-4 d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-plus me-1"></i> Tạo Người Dùng
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fa fa-arrow-left me-1"></i> Trở lại Danh Sách
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @* Script cho Select2/Choices.js (nếu dùng) *@
+    @* <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> *@
+    @* <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> *@
+    @* <script> $(document).ready(function() { $('.roles-multi-select').select2(); }); </script> *@
+}

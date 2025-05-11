@@ -1,0 +1,91 @@
+﻿@model Shopping_Laptop.Models.ProductDetailsViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-3">
+        @Html.Partial("_SlidebarPartial")
+    </div>
+
+    <div class="col-sm-9 padding-right">
+        <div class="product-details">
+            <div class="col-sm-5">
+                <div class="view-product">
+                    <img src="~/media/products/@Model.ProductDetail.Image" alt="@Model.ProductDetail.Name" style="width: 100%; height: auto;" />
+                    <h3 class="text-muted mt-2">Phóng to</h3>
+                </div>
+            </div>
+
+            <div class="col-sm-7">
+                <div class="product-information">
+                    <h2>@Model.ProductDetail.Name</h2>
+                    <span class="d-block mb-2">
+                        <span class="fw-bold fs-4 text-danger">@Model.ProductDetail.Price.ToString("#,##0") ₫</span>
+                        <label class="ms-3">Số lượng:</label>
+                        <input type="number" value="1" min="1" style="width: 60px;" />
+                        @if (@Model.ProductDetail.Quantity > 0)
+                        {
+                            <button type="button" class="btn btn-primary ms-2">
+                                <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary ms-2">
+                                <i class="fa fa-shopping-cart"></i> Hết Hàng
+                            </button>
+                        }
+                    </span>
+                    <p><b>Tình trạng:</b> Còn hàng</p>
+                    <p><b>Loại sản phẩm:</b> Mới 100%</p>
+                    <p><b>Thương hiệu:</b> @Model.ProductDetail.Brand.Name</p>
+                    <p><b>Danh mục:</b> @Model.ProductDetail.Category.Name</p>
+                    <a href="#"><img src="images/product-details/share.png" class="share img-responsive" alt="Chia sẻ" /></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phần Mô tả sản phẩm -->
+        <div class="mt-5">
+            <h3>Mô tả sản phẩm</h3>
+            @Html.Raw(Model.ProductDetail.Description)
+        </div>
+
+        <!-- Phần Đánh giá sản phẩm -->
+        <div class="mt-5">
+            <h4>Để lại đánh giá của bạn:</h4>
+            <form autocomplete="off" asp-action="CommentProduct" asp-controller="Product" method="post">
+                <input type="hidden" name="ProductId" value="@Model.ProductDetail.Id" />
+
+                <div class="mb-2">
+                    <label class="me-2">Đánh giá:</label>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <input type="radio" name="Star" value="@i" id="star@i" />
+                        <i class="fas fa-star" style="color:gold;"></i>
+                    }
+                </div>
+
+                <div class="mb-2">
+                    <input name="Name" class="form-control" placeholder="Họ và tên" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <input name="Email" class="form-control" type="email" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <textarea name="Comment" class="form-control" placeholder="Nhận xét của bạn..." rows="4"></textarea>
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success float-end">Gửi đánh giá</button>
+            </form>
+        </div>
+    </div>
+</div>

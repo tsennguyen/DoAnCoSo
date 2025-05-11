@@ -1,0 +1,108 @@
+﻿@model IEnumerable<OrderModel> 
+
+@{
+    ViewData["Title"] = "Lịch Sử Đơn Hàng";
+    // Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo layout được áp dụng
+}
+
+<div class="container my-4 order-history-container"> @* Thêm class và khoảng cách *@
+    <h3 class="mb-4 section-title">Lịch Sử Đơn Hàng @(!string.IsNullOrEmpty(ViewBag.UserEmail) ? $"của {ViewBag.UserEmail}" : "")</h3>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive"> @* Cho phép bảng cuộn ngang trên màn hình nhỏ *@
+            <table class="table table-bordered table-hover align-middle order-history-table"> @* Thêm class, align-middle *@
+                <thead class="table-light"> @* Header sáng màu *@
+                    <tr>
+                         <th scope="col" class="text-center id-col">#ID</th> 
+                        <th scope="col" class="ordercode-col">Mã Đơn Hàng</th>
+                        <th scope="col" class="text-end shipping-col">Phí Vận Chuyển</th>
+                         <th scope="col" class="coupon-col">Mã KM</th> 
+                         @* <th scope="col" class="user-col">Tên Khách Hàng</th>  *@
+                       
+
+                        <th scope="col" class="text-center status-col">Trạng Thái</th>
+
+                        <th scope="col" class="text-center payment-col">Thanh Toán</th>
+                        <th scope="col" class="date-col">Ngày Đặt</th>
+                        <th scope="col" class="text-center action-col">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center id-col">@item.Id</td> 
+                            <td class="ordercode-col fw-bold">@item.OrderCode</td> @* Mã đơn hàng đậm *@
+                            <td class="text-end shipping-col">@item.ShippingCost.ToString("N0") đ</td>
+                            <td class="coupon-col">@(item.CouponCode ?? "N/A")</td> 
+                            @* <td class="user-col">@item.UserName</td>  *@
+                            <td class="text-center status-col">
+                                @if (item.Status == 1)
+                                {
+                                    <span class="badge bg-info text-dark">Đơn hàng mới</span> @* Dùng Badge *@
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span class="badge bg-success">Đã giao hàng</span> @* Dùng Badge *@
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Đã hủy</span> @* Dùng Badge *@
+                                }
+                            </td>
+                            <td class="text-center payment-col">
+                                @if (item.PaymentMethod == "COD" || item.PaymentMethod == null)
+                                {
+                                    <span class="badge bg-primary">COD - Thanh toán khi nhận hàng</span> @* Badge cho COD *@
+                                }
+                                else if (item.PaymentMethod.StartsWith("MOMO")) // Kiểm tra nếu bắt đầu bằng MOMO
+                                {
+                                    <span class="badge bg-momo-custom">MoMo</span> @* Badge riêng cho Momo *@
+                                }
+                                else if (item.PaymentMethod.StartsWith("VNPAY")) // Kiểm tra VNPAY
+                                {
+                                     <span class="badge bg-vnpay-custom">VNPAY</span> @* Badge riêng cho VNPAY *@
+                                }
+                                else
+                                {
+                                     <span class="badge bg-warning text-dark">MOMO | @item.PaymentMethod</span> @* Các loại khác *@
+                                }
+                            </td>
+                            <td class="date-col">@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td> @* Thêm giờ phút *@
+                            <td class="text-center action-col">
+                                @* Chỉ hiển thị nút Hủy nếu đơn hàng ở trạng thái "Đơn hàng mới" (Status == 1) *@
+                                @if (item.Status == 1)
+                                {
+                                    <a onclick="return confirm('Bạn xác nhận muốn hủy đơn hàng này?')"
+                                       class="btn btn-warning btn-sm cancel-order-btn"
+                                       asp-action="CancelOrder" asp-controller="Account" asp-route-ordercode="@item.OrderCode"
+                                       title="Hủy đơn hàng">
+                                        <i class="fa fa-times"></i> Hủy
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">-</span> @* Hoặc để trống *@
+                                }
+                                @* Có thể thêm nút xem chi tiết đơn hàng ở đây *@
+                                @* <a class="btn btn-info btn-sm view-order-btn ms-1" asp-action="OrderDetails" asp-controller="Account" asp-route-ordercode="@item.OrderCode" title="Xem chi tiết"><i class="fa fa-eye"></i></a> *@
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else // Trường hợp không có đơn hàng nào
+    {
+        <div class="text-center no-orders-message py-5 border rounded bg-light">
+             <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-3"></i>
+             <h4>Bạn chưa có đơn hàng nào.</h4>
+             <p class="text-muted">Hãy bắt đầu mua sắm ngay!</p>
+             <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">
+                 <i class="fa fa-shopping-bag me-1"></i> Bắt đầu mua sắm
+             </a>
+        </div>
+    }
+</div>

@@ -1,0 +1,1526 @@
+﻿/* ============================
+   Admin Layout Styles - Updated
+   ============================ */
+
+:root {
+    --admin-sidebar-width: 240px;
+    --admin-sidebar-width-toggled: 80px; /* Chiều rộng khi thu gọn */
+    --admin-sidebar-bg: #2c3e50;
+    --admin-sidebar-link-color: #adb5bd;
+    --admin-sidebar-link-hover-bg: #34495e;
+    --admin-sidebar-link-active-color: #ffffff;
+    --admin-sidebar-link-active-bg: #007bff;
+    --admin-topbar-height: 60px;
+}
+
+body.admin-body {
+    background-color: #f8f9fc;
+    font-size: 0.9rem;
+}
+
+.admin-wrapper {
+    min-height: 100vh;
+}
+
+/* --- Sidebar --- */
+#admin-sidebar {
+    width: var(--admin-sidebar-width);
+    min-height: 100vh;
+    background-color: var(--admin-sidebar-bg);
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    transition: width 0.3s ease; /* Thêm transition */
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Ẩn overflow ngang */
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 0.8rem 1rem; /* Giảm padding header */
+    text-align: left; /* Căn trái */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; /* Sắp xếp brand và nút toggle */
+    align-items: center;
+    height: var(--admin-topbar-height); /* Cùng chiều cao với topbar */
+}
+
+.sidebar-brand {
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block; /* Để không chiếm hết hàng */
+    white-space: nowrap; /* Ngăn brand xuống dòng */
+    overflow: hidden; /* Ẩn text khi thu gọn */
+    text-overflow: ellipsis; /* Hiển thị ... nếu bị ẩn */
+    flex-grow: 1; /* Cho brand chiếm không gian */
+}
+
+    .sidebar-brand i {
+        color: #f1c40f;
+    }
+
+#sidebarToggleDesktop { /* Nút toggle desktop */
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.7);
+    background: none;
+    border: none;
+}
+
+    #sidebarToggleDesktop:hover {
+        color: #fff;
+    }
+
+    #sidebarToggleDesktop i::before { /* Đổi icon khi toggle */
+        content: "\f053"; /* fa-chevron-left */
+        transition: transform 0.3s ease;
+    }
+
+
+.sidebar-nav {
+    padding-top: 0.5rem; /* Giảm padding trên */
+    flex-grow: 1;
+}
+
+#admin-sidebar .nav-link {
+    color: var(--admin-sidebar-link-color);
+    padding: 0.65rem 1.25rem; /* Giảm padding link */
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-left: 3px solid transparent;
+    display: flex; /* Căn icon và text */
+    align-items: center;
+    white-space: nowrap; /* Ngăn text xuống dòng */
+    overflow: hidden; /* Ẩn text khi thu gọn */
+}
+
+    #admin-sidebar .nav-link:hover {
+        background-color: var(--admin-sidebar-link-hover-bg);
+        color: #fff;
+        border-left-color: transparent;
+    }
+
+    #admin-sidebar .nav-link.active {
+        background-color: var(--admin-sidebar-link-active-bg);
+        color: var(--admin-sidebar-link-active-color);
+        font-weight: 600;
+        border-left-color: #f1c40f;
+    }
+
+    #admin-sidebar .nav-link i.fa-fw {
+        width: 1.5em; /* Tăng nhẹ để icon cách text */
+        text-align: center;
+        flex-shrink: 0; /* Không cho icon co lại */
+    }
+
+    #admin-sidebar .nav-link .sidebar-link-text {
+        transition: opacity 0.2s ease; /* Hiệu ứng ẩn text */
+        opacity: 1;
+    }
+
+
+/* --- Main Content Wrapper & Topbar --- */
+#admin-content-wrapper {
+    margin-left: var(--admin-sidebar-width);
+    width: calc(100% - var(--admin-sidebar-width));
+    transition: margin-left 0.3s ease, width 0.3s ease; /* Thêm transition */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fc;
+}
+
+.topbar {
+    height: var(--admin-topbar-height);
+    padding: 0 1.5rem;
+    z-index: 999;
+    position: sticky; /* Làm topbar sticky */
+    top: 0;
+}
+
+#sidebarToggleTop { /* Nút toggle mobile */
+    color: #858796;
+}
+
+/* ... Các style khác cho topbar, dropdown giữ nguyên ... */
+
+#admin-content-wrapper main {
+    flex-grow: 1;
+    padding: 1.5rem;
+}
+
+.sticky-footer {
+    padding: 1.5rem 0;
+    flex-shrink: 0;
+}
+
+
+/* --- Styles for Toggled/Collapsed Sidebar --- */
+body.sidebar-toggled #admin-sidebar {
+    width: var(--admin-sidebar-width-toggled); /* Chiều rộng mới khi thu gọn */
+    overflow: hidden; /* Quan trọng: Ẩn hẳn nội dung tràn ra */
+}
+
+body.sidebar-toggled #admin-content-wrapper {
+    margin-left: var(--admin-sidebar-width-toggled);
+    width: calc(100% - var(--admin-sidebar-width-toggled));
+}
+
+/* Ẩn text khi sidebar thu gọn */
+body.sidebar-toggled #admin-sidebar .sidebar-brand-text,
+body.sidebar-toggled #admin-sidebar .sidebar-link-text {
+    opacity: 0;
+    /* Hoặc dùng display: none; nhưng opacity cho phép transition */
+    pointer-events: none; /* Không cho tương tác khi ẩn */
+    /* display: none; */
+}
+
+/* Điều chỉnh padding và icon khi thu gọn */
+body.sidebar-toggled #admin-sidebar .nav-link {
+    justify-content: center; /* Căn giữa icon */
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+    body.sidebar-toggled #admin-sidebar .nav-link i {
+        margin-right: 0 !important;
+    }
+/* Đổi icon nút toggle thành chevron-right khi thu gọn */
+body.sidebar-toggled #sidebarToggleDesktop i::before {
+    content: "\f054"; /* fa-chevron-right */
+    transform: rotate(360deg); /* Hiệu ứng xoay nhẹ */
+}
+
+
+/* --- Responsive (Ẩn nút toggle Desktop trên mobile) --- */
+@media (max-width: 767.98px) {
+    #sidebarToggleDesktop {
+        display: none !important;
+    }
+    /* Có thể thêm style khác cho mobile nếu cần */
+    body.admin-body.sidebar-toggled #admin-sidebar {
+        width: var(--admin-sidebar-width); /* Hiện lại đầy đủ khi toggle trên mobile */
+        left: 0; /* Đảm bảo nó hiện ra đúng vị trí */
+        /* Cần thêm overlay và xử lý đóng khi click ra ngoài */
+    }
+
+    body.admin-body.sidebar-toggled #admin-content-wrapper {
+        margin-left: 0; /* Content không bị đẩy khi sidebar hiện trên mobile */
+    }
+}
+
+/*notification*/
+
+/* ============================
+   Admin Notification Styles
+   ============================ */
+
+.notification {
+    padding: 1rem 1.25rem; /* Padding lớn hơn chút */
+    margin-bottom: 1.5rem; /* Khoảng cách dưới */
+    border: 1px solid transparent; /* Bỏ border mặc định, dùng màu nền */
+    border-radius: 0.375rem; /* Bo góc chuẩn của Bootstrap */
+    position: relative; /* Cho phép định vị nút đóng nếu thêm sau */
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1); /* Thêm bóng đổ */
+    font-size: 0.95rem; /* Cỡ chữ */
+    font-weight: 500; /* Chữ hơi đậm */
+    opacity: 1; /* Mặc định hiển thị */
+    transition: opacity 0.5s ease-out; /* Hiệu ứng mờ dần khi ẩn (nếu dùng JS) */
+}
+
+    /* --- Success Notification --- */
+    .notification.alert-success {
+        color: #0a3622; /* Màu chữ đậm hơn cho contrast */
+        background-color: #d1e7dd; /* Màu nền xanh lá nhạt */
+        border-color: #a3cfbb; /* Màu viền nhạt */
+    }
+        /* (Optional) Icon for success */
+        .notification.alert-success::before {
+            font-family: "Font Awesome 6 Free"; /* Hoặc "Font Awesome 5 Free" */
+            content: "\f058"; /* fa-check-circle */
+            font-weight: 900; /* Solid icon */
+            margin-right: 0.75rem;
+            vertical-align: middle;
+        }
+
+
+    /* --- Error Notification --- */
+    .notification.alert-danger {
+        color: #58151c; /* Màu chữ đậm hơn */
+        background-color: #f8d7da; /* Màu nền hồng/đỏ nhạt */
+        border-color: #f1aeb5; /* Màu viền nhạt */
+    }
+        /* (Optional) Icon for error */
+        .notification.alert-danger::before {
+            font-family: "Font Awesome 6 Free"; /* Hoặc "Font Awesome 5 Free" */
+            content: "\f071"; /* fa-exclamation-triangle */
+            font-weight: 900; /* Solid icon */
+            margin-right: 0.75rem;
+            vertical-align: middle;
+        }
+
+/* (Optional) Thêm nút đóng (Cần thêm HTML và JS để hoạt động) */
+
+.notification .btn-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    padding: 0.5rem;
+}
+
+
+ (Optional) Animation khi xuất hiện 
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification {
+    animation: fadeInDown 0.5s ease-out;
+}
+
+/*Chuyentrang- paging*/
+/* ============================
+   Admin Pagination Styles
+   ============================ */
+
+/* Container cho phân trang (Nếu bạn đặt partial trong div riêng) */
+.admin-pagination-container {
+    margin-top: 2rem; /* Khoảng cách trên với bảng hoặc nội dung khác */
+}
+
+/* --- Bootstrap Pagination Base (Thường không cần sửa nhiều) --- */
+.pagination {
+    /* display: flex; */ /* Bootstrap đã có */
+    /* padding-left: 0; */ /* Bootstrap đã có */
+    /* list-style: none; */ /* Bootstrap đã có */
+    /* border-radius: 0.375rem; */ /* Bootstrap đã có */
+}
+
+/* Căn chỉnh (justify-content-end đã có trong HTML của bạn) */
+/* Nếu muốn căn giữa: */
+/* .pagination { justify-content: center !important; } */
+/* Nếu muốn căn trái: */
+/* .pagination { justify-content: flex-start !important; } */
+
+
+/* --- Page Item (Thẻ <li>) --- */
+.page-item {
+    /* Style mặc định của Bootstrap thường ổn */
+}
+
+/* --- Page Link (Thẻ <a> hoặc <span>) --- */
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.85rem; /* Điều chỉnh padding */
+    font-size: 0.88rem; /* Điều chỉnh cỡ chữ */
+    color: #007bff; /* Màu link xanh */
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dee2e6; /* Viền xám nhạt */
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin: 0 2px; /* Khoảng cách nhỏ giữa các nút */
+    border-radius: 0.25rem; /* Bo góc nhẹ */
+}
+
+    /* Hover state */
+    .page-link:hover {
+        z-index: 2;
+        color: #0056b3; /* Màu xanh đậm hơn khi hover */
+        background-color: #e9ecef; /* Nền xám nhạt khi hover */
+        border-color: #dee2e6;
+    }
+
+    /* Focus state (Thường dùng viền xanh của Bootstrap) */
+    .page-link:focus {
+        z-index: 3;
+        color: #0056b3;
+        background-color: #e9ecef;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Glow xanh khi focus */
+    }
+
+/* --- Active State (Trang hiện tại) --- */
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff; /* Chữ trắng */
+    background-color: #007bff; /* Nền xanh primary */
+    border-color: #007bff;
+    font-weight: 600; /* Đậm hơn */
+}
+
+/* --- Disabled State (Nút First/Previous hoặc Next/Last khi ở đầu/cuối) --- */
+.page-item.disabled .page-link {
+    color: #6c757d; /* Màu xám */
+    pointer-events: none; /* Không cho click */
+    background-color: #fff;
+    border-color: #dee2e6;
+    opacity: 0.7; /* Hơi mờ đi */
+}
+
+/* (Optional) Thêm icon cho First/Prev/Next/Last */
+
+.page-item:first-child .page-link::before {
+    font-family: "Font Awesome 6 Free"; content: "\f100"; font-weight: 900; margin-right: 5px; // fa-angle-double-left
+}
+.page-item:nth-child(2) .page-link::before { // Assuming Previous is the second item
+     font-family: "Font Awesome 6 Free"; content: "\f104"; font-weight: 900; margin-right: 5px; // fa-angle-left
+}
+.page-item:nth-last-child(2) .page-link::after { // Assuming Next is second to last
+     font-family: "Font Awesome 6 Free"; content: "\f105"; font-weight: 900; margin-left: 5px; // fa-angle-right
+}
+.page-item:last-child .page-link::after {
+    font-family: "Font Awesome 6 Free"; content: "\f101"; font-weight: 900; margin-left: 5px; // fa-angle-double-right
+}
+.page-link[asp-route-pg="1"]::before { ... } 
+
+/*User Admin*/
+/* =====================================
+   Admin User List Page Styles
+   ===================================== */
+
+/* --- Container và Tiêu đề --- */
+.admin-user-list-container { /* Class bao ngoài cùng */
+    margin-top: 1.5rem; /* Khoảng cách với topbar/header */
+    margin-bottom: 1.5rem;
+}
+
+    .admin-user-list-container .section-title {
+        font-size: 1.8rem;
+        color: #004a99;
+        margin-bottom: 1rem; /* Giảm khoảng cách dưới tiêu đề */
+        font-weight: 600;
+        padding-bottom: 10px;
+        /* border-bottom: 1px solid #e0e0e0; */ /* Có thể bỏ border */
+    }
+
+    /* --- Nút "Add User" --- */
+    .admin-user-list-container .btn-primary {
+        /* Kế thừa style nút primary chung */
+    }
+
+        .admin-user-list-container .btn-primary i {
+            margin-right: 5px; /* Khoảng cách icon */
+        }
+
+/* --- Bảng Danh sách User --- */
+.admin-table { /* Class cho bảng Admin */
+    border: 1px solid #dee2e6; /* Viền ngoài */
+    font-size: 0.9rem; /* Cỡ chữ nội dung bảng */
+    margin-top: 1rem; /* Khoảng cách trên */
+    border-collapse: collapse; /* Gộp viền (tùy chọn) */
+    width: 100%; /* Chiếm hết chiều rộng */
+}
+
+    /* --- Header Bảng --- */
+    .admin-table thead.table-light th {
+        background-color: #e9ecef; /* Nền header sáng */
+        color: #495057; /* Màu chữ header */
+        padding: 0.75rem 0.85rem; /* Padding header */
+        font-weight: 600; /* Chữ đậm */
+        border-bottom-width: 2px; /* Đường kẻ dưới header đậm hơn */
+        border-color: #ccc; /* Màu đường kẻ */
+        white-space: nowrap; /* Ngăn xuống dòng */
+        vertical-align: middle; /* Căn giữa dọc */
+        text-align: left; /* Căn trái mặc định */
+    }
+
+        .admin-table thead.table-light th.text-center {
+            text-align: center; /* Căn giữa cho cột STT, Actions */
+        }
+
+    /* --- Body Bảng --- */
+    .admin-table tbody td {
+        padding: 0.65rem 0.85rem; /* Padding cell */
+        vertical-align: middle;
+        line-height: 1.5;
+        color: #444; /* Màu chữ cell */
+        border-top: 1px solid #e0e0e0; /* Đường kẻ ngang giữa các dòng */
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.04); /* Màu nền khi hover */
+    }
+
+    /* --- Định dạng Cột Cụ thể --- */
+    /* Ước tính chiều rộng cột */
+    .admin-table .stt-col {
+        width: 5%;
+        text-align: center;
+    }
+
+    .admin-table .username-col {
+        width: 20%;
+    }
+
+    .admin-table .email-col {
+        width: 28%;
+        word-break: break-all;
+    }
+    /* Cho phép xuống dòng email dài */
+    .admin-table .phone-col {
+        width: 12%;
+    }
+
+    .admin-table .roles-col {
+        width: 15%;
+    }
+
+    .admin-table .action-col {
+        width: 10%;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Style riêng */
+    .admin-table .username-col {
+        font-weight: 500;
+        color: #0056b3; /* Màu xanh cho username */
+    }
+
+    .admin-table .roles-col .badge { /* Style cho Badges */
+        font-size: 0.75rem;
+        padding: 4px 7px;
+        text-transform: uppercase;
+        margin-right: 3px; /* Khoảng cách giữa các badge */
+        margin-bottom: 3px; /* Cho phép xuống dòng nếu nhiều badge */
+        display: inline-block; /* Để margin bottom hoạt động */
+    }
+
+    /* --- Nút Hành động (Edit/Delete) --- */
+    .admin-table .action-col .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        margin: 0 2px; /* Khoảng cách giữa 2 nút */
+    }
+
+        .admin-table .action-col .btn-sm i {
+            margin-right: 0; /* Không cần margin nếu chỉ có icon */
+            font-size: 0.9em;
+        }
+
+    .admin-table .action-col .btn-warning { /* Nút Edit */
+        color: #fff; /* Chữ trắng trên nền vàng cho dễ nhìn */
+    }
+
+    .admin-table .action-col .btn-danger { /* Nút Delete */
+        /* Kế thừa màu đỏ */
+    }
+
+/* --- Phân Trang (Giả sử dùng CSS từ bước trước) --- */
+/* Đảm bảo bạn đã có các quy tắc CSS cho .admin-pagination-container hoặc .pagination */
+
+/* --- Thông báo khi không có User --- */
+.alert.alert-info { /* Style cho thông báo nếu cần */
+    margin-top: 1.5rem;
+}
+
+/*edit user admin*/
+/* =====================================
+   Admin Edit/Create Form Styles
+   ===================================== */
+
+.admin-edit-user-container, /* Áp dụng cho cả trang Create nếu dùng cùng class */
+.admin-create-user-container { /* Thêm class này cho trang Create */
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    /* max-width: 700px; */ /* Bỏ max-width nếu dùng col-md-9 */
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+    /* --- Tiêu đề Form --- */
+    .admin-edit-user-container .section-title,
+    .admin-create-user-container .section-title {
+        /* Kế thừa style tiêu đề chung */
+        font-size: 1.6rem; /* Có thể nhỏ hơn tiêu đề trang list */
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    /* Thêm style để hiển thị tên user trong tiêu đề Edit */
+    .admin-edit-user-container .section-title {
+        word-break: break-all; /* Ngăn tên dài làm vỡ layout */
+    }
+
+    /* --- Form Groups & Labels --- */
+    /* Dùng mb-3, mb-4 của Bootstrap đã đủ, không cần .form-group nữa */
+    .admin-edit-user-container .form-label,
+    .admin-create-user-container .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    /* --- Inputs & Select --- */
+    .admin-edit-user-container .form-control,
+    .admin-create-user-container .form-control,
+    .admin-edit-user-container .form-select, /* Nếu dùng form-select */
+    .admin-create-user-container .form-select {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem; /* Padding chuẩn Bootstrap */
+        border-radius: 0.25rem; /* Bo góc chuẩn */
+        border: 1px solid #ced4da;
+        /* Kế thừa transition và focus style từ Bootstrap/admin.css */
+    }
+
+        .admin-edit-user-container .form-control::placeholder, /* Style placeholder */
+        .admin-create-user-container .form-control::placeholder {
+            color: #aab0b6;
+            opacity: 1;
+        }
+
+    /* --- Multi-Select Roles --- */
+    .admin-edit-user-container .roles-multi-select,
+    .admin-create-user-container .roles-multi-select {
+        /* Style cơ bản cho multi-select */
+        height: auto; /* Reset chiều cao */
+        min-height: 150px; /* Đặt chiều cao tối thiểu dễ nhìn */
+        /* Lưu ý: Multi-select gốc khó tùy chỉnh đẹp, nên dùng thư viện JS */
+    }
+    /* Helper text */
+    .admin-edit-user-container .form-text,
+    .admin-create-user-container .form-text {
+        font-size: 0.8rem;
+    }
+
+
+    /* --- Validation Messages --- */
+    .admin-edit-user-container .text-danger,
+    .admin-create-user-container .text-danger {
+        font-size: 0.8rem;
+        display: block;
+        margin-top: 0.25rem;
+    }
+    /* Style input khi có lỗi validation */
+    .admin-edit-user-container input.input-validation-error,
+    .admin-create-user-container input.input-validation-error,
+    .admin-edit-user-container select.input-validation-error,
+    .admin-create-user-container select.input-validation-error {
+        border-color: #dc3545; /* Viền đỏ */
+    }
+
+        .admin-edit-user-container input.input-validation-error:focus,
+        .admin-create-user-container input.input-validation-error:focus,
+        .admin-edit-user-container select.input-validation-error:focus,
+        .admin-create-user-container select.input-validation-error:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Glow đỏ khi focus lỗi */
+        }
+
+
+    /* --- Form Buttons --- */
+    .admin-edit-user-container .form-group .btn-primary, /* Nút Submit */
+    .admin-create-user-container .form-group .btn-primary {
+        padding: 0.6rem 1.5rem; /* Padding lớn hơn */
+        font-weight: 500;
+    }
+
+        .admin-edit-user-container .form-group .btn-primary i,
+        .admin-create-user-container .form-group .btn-primary i {
+            margin-right: 5px;
+        }
+
+    .admin-edit-user-container .form-group .btn-secondary, /* Nút Back */
+    .admin-create-user-container .form-group .btn-secondary {
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+    }
+
+        .admin-edit-user-container .form-group .btn-secondary i,
+        .admin-create-user-container .form-group .btn-secondary i {
+            margin-right: 5px;
+        }
+
+/*Shipping*/
+/* =====================================
+   Admin Shipping Page Styles
+   ===================================== */
+
+.admin-shipping-container { /* Container chính */
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+    .admin-shipping-container .section-title {
+        /* Kế thừa hoặc định nghĩa riêng */
+        font-size: 1.8rem;
+        color: #004a99;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+
+/* --- Form Thêm Mới --- */
+.add-shipping-form-section {
+    background-color: #f8f9fa; /* Nền sáng */
+    border-color: #dee2e6 !important; /* Border rõ hơn chút */
+}
+
+    .add-shipping-form-section .form-section-title {
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: #0056b3;
+    }
+    /* Style cho label, select, input nhỏ (kế thừa từ Bootstrap hoặc admin.css) */
+    .add-shipping-form-section .form-label-sm {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 4px;
+    }
+
+    .add-shipping-form-section .form-select-sm,
+    .add-shipping-form-section .form-control-sm {
+        font-size: 0.9rem;
+    }
+    /* Nút Tạo */
+    .add-shipping-form-section .btn-add-shipping {
+        padding: 0.4rem 1rem; /* Điều chỉnh padding nút */
+    }
+
+        .add-shipping-form-section .btn-add-shipping i {
+            margin-right: 4px;
+        }
+
+/* --- Danh sách Phí Vận Chuyển --- */
+.shipping-list-section {
+    /* Khoảng cách trên đã có từ mt-5 */
+}
+
+    .shipping-list-section .section-subtitle {
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+/* Bảng Danh Sách (Kế thừa từ .admin-table) */
+#shippingListTable {
+    /* Kế thừa các style của .admin-table */
+}
+    /* Căn chỉnh cột giá */
+    #shippingListTable .price-col {
+        width: 15%; /* Chiều rộng cột giá */
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    /* Cột hành động */
+    #shippingListTable .action-col {
+        width: 10%; /* Chiều rộng cột hành động */
+    }
+
+    #shippingListTable .btn-sm { /* Style chung cho nút trong bảng */
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+/* --- Thông báo khi không có dữ liệu --- */
+.alert.alert-info {
+    margin-top: 1rem;
+}
+
+/*index product*/
+
+/* =====================================
+   Admin Product List Page Styles (Matching Provided HTML)
+   ===================================== */
+
+/* --- Container và Tiêu đề (Giả sử kế thừa từ layout) --- */
+/* Nếu cần style riêng cho tiêu đề H3 và nút Add */
+.admin-product-list-container h3 { /* Thay .admin-product-list-container bằng class cha nếu có */
+    font-size: 1.8rem;
+    color: #004a99;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.admin-product-list-container .btn-primary.mb-3 { /* Nút Add Product */
+    margin-bottom: 1.5rem !important; /* Đảm bảo khoảng cách */
+}
+
+
+/* --- Bảng Sản Phẩm (#myTable) --- */
+#myTable { /* Target trực tiếp ID bảng */
+    border: 1px solid #dee2e6;
+    font-size: 0.88rem; /* Chữ nhỏ hơn chút do nhiều cột */
+    margin-top: 1rem;
+    width: 100%;
+    border-collapse: collapse; /* Gộp viền */
+}
+
+    /* --- Header Bảng (thead.thead-dark) --- */
+    #myTable thead.thead-dark th {
+        /* Override thead-dark mặc định của Bootstrap cũ nếu cần */
+        background-color: #343a40; /* Màu nền tối */
+        color: #fff; /* Chữ trắng */
+        padding: 0.75rem 0.85rem;
+        font-weight: 600;
+        border-bottom-width: 2px;
+        border-color: #454d55; /* Màu viền tối hơn */
+        white-space: nowrap;
+        vertical-align: middle;
+        text-align: left;
+    }
+        /* Căn giữa cho một số header nếu muốn */
+        #myTable thead.thead-dark th:first-child, /* Cột # */
+        #myTable thead.thead-dark th:nth-child(7), /* Cột Hình Ảnh */
+        #myTable thead.thead-dark th:nth-child(11) /* Cột Thao Tác */ {
+            text-align: center;
+        }
+
+        #myTable thead.thead-dark th:nth-child(6) { /* Cột Giá */
+            text-align: right;
+        }
+
+
+    /* --- Body Bảng --- */
+    #myTable tbody td,
+    #myTable tbody th[scope="row"] { /* Bao gồm cả cột # */
+        padding: 0.65rem 0.85rem;
+        vertical-align: middle;
+        line-height: 1.5;
+        color: #444;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    #myTable tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.04);
+    }
+    /* Cột # (ID) */
+    #myTable tbody th[scope="row"] {
+        text-align: center;
+        width: 5%; /* Chiều rộng nhỏ */
+        font-weight: normal; /* Bỏ đậm mặc định */
+    }
+
+    /* Cột Tên Sản Phẩm */
+    #myTable tbody td:nth-child(2) {
+        font-weight: 500;
+    }
+
+    /* Cột Số Lượng */
+    #myTable tbody td:nth-child(3) {
+        text-align: center;
+        white-space: nowrap;
+    }
+
+        #myTable tbody td:nth-child(3) b {
+            display: block; /* Cho số lượng xuống dòng */
+            margin-bottom: 3px;
+            font-size: 1.1em; /* Số lượng to hơn chút */
+        }
+
+        #myTable tbody td:nth-child(3) a { /* Link "Thêm Số Lượng" */
+            font-size: 0.85em;
+            /* color: #007bff; */ /* Kế thừa màu link */
+            text-decoration: none;
+        }
+
+            #myTable tbody td:nth-child(3) a:hover {
+                text-decoration: underline;
+            }
+
+
+    /* Cột Đã Bán */
+    #myTable tbody td:nth-child(4) {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Cột Mô Tả */
+    #myTable tbody td:nth-child(5) {
+       
+        /* Cần xử lý HTML trong Description nếu có */
+        /* Đoạn CSS này chỉ giới hạn text, không ẩn HTML */
+        word-break: break-word; /* Ngăn từ quá dài làm vỡ layout */
+        max-width: 250px; /* Giới hạn chiều rộng tối đa để tránh quá rộng */
+    }
+
+    /* Cột Giá */
+    #myTable tbody td:nth-child(6) {
+        text-align: right;
+        font-weight: 600;
+        white-space: nowrap;
+        color: #dc3545; /* Màu đỏ cho giá (tùy chọn) */
+    }
+
+    /* Cột Hình Ảnh */
+    #myTable tbody td:nth-child(7) {
+        text-align: center;
+        width: 120px; /* Chiều rộng cột ảnh */
+    }
+
+        #myTable tbody td:nth-child(7) img {
+            max-width: 100px; /* Bằng width trong HTML */
+            max-height: 80px; /* Giới hạn chiều cao thêm */
+            height: auto; /* Giữ tỷ lệ theo style inline */
+            /* object-fit: contain; */ /* Đã có trong style inline */
+            border-radius: 4px;
+            border: 1px solid #eee;
+            background-color: #fff;
+            display: inline-block; /* Để căn giữa nếu cần */
+        }
+
+    /* Cột Slug */
+    #myTable tbody td:nth-child(8) {
+        font-size: 0.85em;
+        color: #777;
+        word-break: break-all;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; /* Có thể bỏ nếu muốn xuống dòng */
+    }
+
+    /* Cột Danh Mục, Thương Hiệu */
+    #myTable tbody td:nth-child(9),
+    #myTable tbody td:nth-child(10) {
+        font-size: 0.9em;
+    }
+
+    /* Cột Thao Tác */
+    #myTable tbody td:nth-child(11) {
+        text-align: center;
+        white-space: nowrap; /* Ngăn nút xuống dòng */
+    }
+
+        #myTable tbody td:nth-child(11) .btn-sm { /* Style chung nút sm */
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            margin: 0 2px; /* Khoảng cách giữa các nút */
+        }
+
+        #myTable tbody td:nth-child(11) .btn-warning {
+            color: #fff; /* Chữ trắng trên nút vàng */
+        }
+
+/* Class confirmDeletion (nếu dùng JS để xác nhận thay vì inline onclick) */
+/* .confirmDeletion { ... } */
+
+/* --- Phân Trang (Kế thừa từ CSS phân trang Admin đã có) --- */
+/* Đảm bảo bạn đã có style cho .pagination hoặc .admin-pagination-container */
+
+/*edit product*/
+/* =====================================
+   Admin Edit/Create Product Form Styles
+   ===================================== */
+
+/* Kế thừa style chung từ .admin-edit-user-container nếu đã có */
+.admin-edit-product-container {
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+    .admin-edit-product-container .section-title {
+        /* Kế thừa */
+        word-break: break-all; /* Cho tên SP */
+    }
+
+    /* --- Form Controls (Kế thừa style chung) --- */
+    .admin-edit-product-container .form-label {
+        /* Kế thừa */
+        font-weight: 500;
+    }
+
+    .admin-edit-product-container .form-control,
+    .admin-edit-product-container .form-select {
+        /* Kế thừa */
+        font-size: 0.9rem;
+    }
+
+    .admin-edit-product-container textarea.form-control {
+        min-height: 150px; /* Tăng chiều cao cho mô tả */
+    }
+
+/* Hiển thị giá định dạng */
+#price-convert {
+    font-size: 0.9em; /* Nhỏ hơn input một chút */
+    font-weight: bold;
+    color: #0d6efd; /* Màu xanh primary */
+}
+
+/* --- Image Upload & Preview --- */
+.admin-edit-product-container .current-image-section,
+.admin-edit-product-container .new-image-preview-section {
+    /* Style cho khu vực ảnh */
+    margin-bottom: 1rem; /* Khoảng cách nếu xuống dòng */
+}
+
+.admin-edit-product-container .form-label-sm { /* Label "Ảnh hiện tại", "Xem trước" */
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.admin-edit-product-container .img-thumbnail { /* Bootstrap class */
+    padding: 0.25rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    max-width: 100%; /* Đảm bảo không tràn container */
+    height: auto;
+}
+
+.admin-edit-product-container .current-product-image,
+.admin-edit-product-container .new-product-image-preview {
+    max-width: 150px; /* Giới hạn chiều rộng ảnh */
+    max-height: 150px; /* Giới hạn chiều cao ảnh */
+    object-fit: contain; /* Hiển thị toàn bộ ảnh */
+    display: block; /* Để margin hoạt động */
+}
+
+/* --- Buttons (Kế thừa) --- */
+.admin-edit-product-container .btn-primary i,
+.admin-edit-product-container .btn-secondary i {
+    margin-right: 5px;
+}
+
+/* --- Validation (Kế thừa) --- */
+.admin-edit-product-container .text-danger { /*...*/
+}
+
+.admin-edit-product-container .input-validation-error { /*...*/
+}
+
+/*soluong product*/
+
+/* =====================================
+   Admin Order List Page Styles (Matching Provided HTML)
+   ===================================== */
+
+/* --- Container và Tiêu đề (Giả sử có container và class .section-title từ layout) --- */
+.admin-order-list-container h3 { /* Hoặc target H3 trực tiếp nếu không có container */
+    font-size: 1.8rem;
+    color: #004a99;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* --- Bảng Đơn Hàng (#myTable) --- */
+#myTable { /* Target trực tiếp ID */
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    margin-top: 1.5rem; /* Khoảng cách với tiêu đề */
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff; /* Nền trắng cho bảng */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* Bóng đổ nhẹ */
+}
+
+    /* --- Header Bảng (thead.thead-dark) --- */
+    #myTable thead.thead-dark th {
+        background-color: #343a40; /* Giữ màu thead-dark */
+        color: #fff;
+        padding: 0.75rem 0.85rem;
+        font-weight: 600;
+        border-bottom-width: 2px;
+        border-color: #454d55;
+        white-space: nowrap;
+        vertical-align: middle;
+        text-align: left; /* Căn trái mặc định */
+    }
+        /* Căn chỉnh một số header nếu muốn */
+        #myTable thead.thead-dark th:nth-child(1), /* ID */
+        #myTable thead.thead-dark th:nth-child(6), /* Trạng thái */
+        #myTable thead.thead-dark th:nth-child(7), /* Thanh toán */
+        #myTable thead.thead-dark th:nth-child(9) /* Hành động */ {
+            text-align: center;
+        }
+
+        #myTable thead.thead-dark th:nth-child(3) { /* Giá VC */
+            text-align: right;
+        }
+
+
+    /* --- Body Bảng --- */
+    #myTable tbody td {
+        padding: 0.7rem 0.85rem; /* Điều chỉnh padding cell */
+        vertical-align: middle;
+        line-height: 1.5;
+        color: #444;
+        border-top: 1px solid #e9ecef; /* Đường kẻ ngang nhạt hơn */
+    }
+
+    #myTable tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.04); /* Màu hover */
+    }
+
+    /* --- Định dạng Cột Cụ thể (dùng nth-child) --- */
+    #myTable tbody td:nth-child(1) { /* Cột ID */
+        text-align: center;
+        width: 5%;
+        font-size: 0.85em;
+        color: #6c757d;
+    }
+
+    #myTable tbody td:nth-child(2) { /* Mã Đơn Hàng */
+        font-weight: 500;
+        width: 12%;
+    }
+
+    #myTable tbody td:nth-child(3) { /* Giá VC */
+        text-align: right;
+        white-space: nowrap;
+        width: 10%;
+    }
+
+    #myTable tbody td:nth-child(4) { /* Mã KM */
+        width: 8%;
+        font-style: italic;
+        color: #6c757d;
+        font-size: 0.9em;
+    }
+
+    #myTable tbody td:nth-child(5) { /* Tên KH */
+        width: 15%;
+    }
+
+    #myTable tbody td:nth-child(6) { /* Trạng Thái */
+        text-align: center;
+        width: 12%;
+        font-weight: 500;
+    }
+        /* Style cho text trạng thái */
+        #myTable tbody td:nth-child(6) .text-success {
+            color: #198754 !important;
+        }
+
+        #myTable tbody td:nth-child(6) .text-danger {
+            color: #dc3545 !important;
+        }
+    /* Có thể thêm màu khác nếu muốn */
+    /* #myTable tbody td:nth-child(6) .text-info { color: #0dcaf0 !important; } */
+
+    #myTable tbody td:nth-child(7) { /* Thanh Toán */
+        text-align: center;
+        width: 12%;
+    }
+        /* Style cho text phương thức thanh toán */
+        #myTable tbody td:nth-child(7) .text-primary {
+            color: #0d6efd !important;
+            font-weight: 500;
+        }
+
+        #myTable tbody td:nth-child(7) .text-danger {
+            color: #ae2070 !important;
+            font-weight: 500;
+        }
+            /* Màu giống Momo */
+            #myTable tbody td:nth-child(7) .text-danger a { /* Link chi tiết Momo */
+                color: inherit !important; /* Giữ màu của span */
+                text-decoration: underline;
+                font-size: 0.9em; /* Nhỏ hơn chút */
+            }
+
+                #myTable tbody td:nth-child(7) .text-danger a:hover {
+                    color: #8f1a5b !important; /* Đậm hơn khi hover */
+                }
+
+
+    #myTable tbody td:nth-child(8) { /* Ngày Đặt */
+        width: 10%;
+        white-space: nowrap;
+    }
+
+    #myTable tbody td:nth-child(9) { /* Hành Động */
+        text-align: center;
+        width: 8%;
+        white-space: nowrap;
+    }
+
+    /* --- Nút Hành động --- */
+    #myTable .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        margin: 0 2px;
+    }
+
+    #myTable .btn-info {
+        color: #fff;
+    }
+/* Class confirmDeletion nếu dùng JS */
+/* #myTable .confirmDeletion { ... } */
+
+
+/* --- Phân trang --- */
+/* Kế thừa style pagination từ admin.css */
+
+/*Chi tiet order*/
+
+/* =====================================
+   Admin Order Details Page Styles
+   ===================================== */
+
+.admin-order-details-container .section-title {
+    /* Kế thừa */
+}
+
+.admin-order-details-container .section-subtitle {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.75rem; /* Giảm margin */
+}
+
+/* --- Order Summary Info Card --- */
+.order-summary-info.card {
+    border-left: 4px solid #007bff; /* Viền xanh bên trái */
+}
+
+.order-summary-info .card-header {
+    padding: 0.75rem 1.25rem;
+}
+
+    .order-summary-info .card-header h5 {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #495057;
+    }
+
+.order-summary-info .card-body p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.order-summary-info .card-body strong {
+    font-weight: 600;
+    color: #333;
+    min-width: 130px; /* Căn chỉnh label */
+    display: inline-block;
+}
+
+.order-summary-info .card-body .badge { /* Style badge trạng thái/thanh toán */
+    font-size: 0.8rem;
+    padding: 0.4em 0.6em;
+    vertical-align: middle;
+}
+
+/* --- Order Details Table --- */
+#detail_order { /* Kế thừa .admin-table */
+    margin-bottom: 0; /* Bỏ margin dưới của bảng */
+}
+
+    #detail_order thead.table-light th {
+        /* Kế thừa */
+    }
+
+    #detail_order tbody td {
+        /* Kế thừa */
+        padding-top: 0.7rem;
+        padding-bottom: 0.7rem;
+    }
+    /* Ảnh sản phẩm trong bảng chi tiết */
+    #detail_order .product-thumbnail {
+        width: 70px;
+        padding: 5px;
+    }
+
+    #detail_order .cart-item-image {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 4px;
+        border: 1px solid #eee;
+    }
+    /* Tên sản phẩm */
+    #detail_order .cart-item-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* --- Table Footer (Tổng tiền) --- */
+    #detail_order tfoot td {
+        border-top: 1px solid #ccc; /* Border trên rõ hơn */
+        padding: 0.8rem 0.85rem;
+        font-size: 0.95rem;
+    }
+
+    #detail_order tfoot tr:last-child td { /* Dòng Tổng thanh toán */
+        /* font-size: 1.1rem; */ /* Đã có fs-5 */
+        /* font-weight: bold; */ /* Đã có fw-bold */
+    }
+
+    #detail_order tfoot tr.table-active td { /* Background cho dòng tổng */
+        background-color: #e9ecef !important; /* Màu sáng hơn */
+        color: #000;
+        border-top-width: 2px; /* Border đậm hơn */
+        border-top-color: #bbb;
+    }
+
+    #detail_order tfoot td.border-0 { /* Bỏ border trong tfoot nếu cần */
+        border: none !important;
+    }
+
+/* --- Update Status Section --- */
+.update-status-section.card {
+    border-left: 4px solid #ffc107; /* Viền vàng */
+}
+
+.update-status-section .card-header {
+    padding: 0.75rem 1.25rem;
+}
+
+    .update-status-section .card-header h5 {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #664d03; /* Màu chữ vàng đậm */
+    }
+
+.update-status-section .card-body {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.update-status-section .form-label-sm {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.update-status-section .form-select-sm {
+    font-size: 0.9rem;
+}
+
+.update-status-section .btn-primary.btn-sm {
+    padding: 0.4rem 1rem;
+}
+
+/* --- Nút Quay lại --- */
+.admin-order-details-container .btn-secondary {
+    /* Kế thừa */
+}
+
+    .admin-order-details-container .btn-secondary i {
+        margin-right: 5px;
+    }
+
+/* --- DataTables Customization (Nếu dùng) --- */
+/* Ví dụ ẩn các thành phần không cần thiết */
+/*
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_paginate {
+    display: none;
+}
+*/
+
+/*Dashboard*/
+/* =====================================
+   Admin Dashboard Page Styles
+   ===================================== */
+
+.admin-dashboard-container .section-title {
+    /* Kế thừa style */
+}
+
+/* --- Stats Cards --- */
+.stats-cards-section .card {
+    border: none; /* Bỏ border mặc định */
+    border-left-width: 4px !important; /* Chỉ giữ border trái */
+    border-radius: 0.35rem;
+    margin-bottom: 1.5rem; /* Mặc định của col-* đã có */
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+    .stats-cards-section .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15) !important;
+    }
+/* Màu border trái */
+.stats-cards-section .border-left-primary {
+    border-left-color: #4e73df !important;
+}
+
+.stats-cards-section .border-left-success {
+    border-left-color: #1cc88a !important;
+}
+
+.stats-cards-section .border-left-info {
+    border-left-color: #36b9cc !important;
+}
+
+.stats-cards-section .border-left-warning {
+    border-left-color: #f6c23e !important;
+}
+
+.stats-cards-section .card-body {
+    padding: 1rem 1.25rem; /* Giảm padding card body */
+}
+
+.stats-cards-section .text-xs {
+    font-size: .7rem;
+}
+
+.stats-cards-section .font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.stats-cards-section .text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+.stats-cards-section .text-gray-300 {
+    color: #dddfeb !important;
+}
+
+
+/* --- Sales Chart Section --- */
+.sales-chart-section.card {
+    border: none; /* Bỏ border ngoài card chart */
+}
+
+.sales-chart-section .card-header {
+    background-color: #f8f9fc; /* Nền header sáng */
+    border-bottom: 1px solid #e3e6f0;
+}
+
+    .sales-chart-section .card-header h6 {
+        font-size: 1rem; /* Cỡ chữ tiêu đề chart */
+    }
+
+/* Chart Filters */
+.chart-filters .datepicker-input {
+    max-width: 140px; /* Giới hạn chiều rộng datepicker */
+}
+
+.chart-filters .form-control-sm,
+.chart-filters .form-select-sm,
+.chart-filters .btn-sm {
+    font-size: 0.8rem; /* Font nhỏ hơn cho filter */
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+
+/* Morris Chart Tooltip */
+.morris-hover {
+    position: absolute;
+    z-index: 1000;
+}
+
+    .morris-hover.morris-default-style {
+        border-radius: 4px;
+        padding: 8px 12px;
+        color: #fff; /* Chữ trắng */
+        background: rgba(0, 0, 0, 0.8); /* Nền đen mờ */
+        border: none; /* Bỏ viền mặc định */
+        font-family: sans-serif;
+        font-size: 12px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+        .morris-hover.morris-default-style .morris-hover-row-label {
+            font-weight: bold;
+            margin: 0.25em 0;
+        }
+
+        .morris-hover.morris-default-style .morris-hover-point {
+            white-space: nowrap;
+            margin: 0.1em 0;
+            text-align: left; /* Căn trái nội dung tooltip */
+        }
+
+/* Style cho SVG chart nếu cần */
+#myfirstchart svg {
+    /* width: 100% !important; */ /* Morris tự xử lý */
+}
+
+/* --- Datepicker UI --- */
+.ui-datepicker { /* Style chung datepicker */
+    z-index: 1100 !important; /* Đảm bảo nổi lên trên */
+    font-size: 0.9rem;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    border-radius: 4px;
+}
+
+.ui-datepicker-header {
+    background: #007bff;
+    color: #fff;
+    border-bottom: 1px solid #0056b3;
+    border-radius: 4px 4px 0 0;
+}
+
+.ui-datepicker .ui-datepicker-title {
+    font-weight: 600;
+}
+
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    color: #fff !important;
+    cursor: pointer;
+}
+
+    .ui-datepicker .ui-datepicker-prev span,
+    .ui-datepicker .ui-datepicker-next span {
+        filter: brightness(0) invert(1); /* Đổi màu icon mặc định thành trắng */
+    }
+
+.ui-datepicker table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ui-datepicker th {
+    padding: 0.5em 0.3em;
+    text-align: center;
+    font-weight: bold;
+    border: 0;
+    font-size: 0.8em;
+    color: #555;
+}
+
+.ui-datepicker td {
+    border: 1px solid #eee;
+    padding: 0;
+}
+
+    .ui-datepicker td span, .ui-datepicker td a {
+        display: block;
+        padding: 0.4em;
+        text-align: right;
+        text-decoration: none;
+        color: #333;
+    }
+
+        .ui-datepicker td a:hover {
+            background: #e9ecef;
+            color: #0056b3;
+        }
+
+    .ui-datepicker td.ui-datepicker-current-day a {
+        background: #007bff;
+        color: #fff;
+    }
+
+    .ui-datepicker td.ui-datepicker-today a {
+        background: #f0f8ff;
+        font-weight: bold;
+        color: #007bff;
+    }

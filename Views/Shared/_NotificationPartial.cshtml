@@ -1,0 +1,25 @@
+﻿@* Hiển thị thông báo từ TempData *@
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show notification" role="alert">
+        <strong>Thành công!</strong> @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+    </div>
+}
+
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show notification" role="alert">
+        <strong>Lỗi!</strong> @TempData["error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $(".notification").slideUp(400);
+        }, 4000);
+    });
+</script>

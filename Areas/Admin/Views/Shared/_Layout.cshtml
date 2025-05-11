@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+
+    @* --- CSS --- *@
+    @* Bootstrap (Giả sử đã có trong wwwroot hoặc dùng CDN) *@
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    @* Font Awesome (Giả sử đã có hoặc dùng CDN) *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    @* CSS Admin tùy chỉnh *@
+    <link href="~/css/admin.css" rel="stylesheet" asp-append-version="true" />
+    @* (Tùy chọn) CSS chung nếu cần *@
+    @* <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" /> *@
+
+    @* Render CSS từ các trang con *@
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+<body class="admin-body">
+    @* Thêm class để dễ target, JS sẽ thêm/xóa class sidebar-toggled ở đây *@
+
+    <div class="admin-wrapper d-flex">
+        @* Flex container cho sidebar và content *@
+
+        <!-- ========== Sidebar ========== -->
+        <nav id="admin-sidebar">
+            <div class="sidebar-header">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="sidebar-brand">
+                    @* Link tới Dashboard *@
+                    <i class="fas fa-user-shield me-2"></i>
+                    <span class="sidebar-brand-text">Admin Panel</span> @* Thêm span để dễ ẩn text *@
+                </a>
+                @* Nút Toggle cho Desktop (Ẩn trên mobile) *@
+                <button id="sidebarToggleDesktop" class="btn btn-link d-none d-md-block rounded-circle ms-auto">
+                    <i class="fa fa-chevron-left text-white"></i>
+                </button>
+            </div>
+
+            <ul class="nav flex-column sidebar-nav">
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                        <i class="fas fa-tachometer-alt fa-fw me-2"></i> <span class="sidebar-link-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Product" asp-action="Index">
+                        <i class="fas fa-box-open fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Sản Phẩm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Shipping" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Shipping" asp-action="Index">
+                        @* Giả sử controller tên Shipping *@
+                        <i class="fas fa-shipping-fast fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Vận Chuyển</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Coupon" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Coupon" asp-action="Index">
+                        @* Giả sử controller tên Coupon *@
+                        <i class="fas fa-tags fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Khuyến Mãi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Category" asp-action="Index">
+                        @* Giả sử controller tên Category *@
+                        <i class="fas fa-sitemap fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Danh Mục</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Brand" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Brand" asp-action="Index">
+                        @* Giả sử controller tên Brand *@
+                        <i class="fas fa-copyright fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Thương Hiệu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Order" asp-action="Index">
+                        <i class="fas fa-receipt fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Đơn Hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")"
+                       asp-area="Admin" asp-controller="User" asp-action="Index">
+                        <i class="fas fa-users fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Người Dùng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Contact" asp-action="Index">
+                        @* Giả sử controller tên Contact *@
+                        <i class="fas fa-address-book fa-fw me-2"></i> <span class="sidebar-link-text">Quản Lý Liên Hệ</span>
+                    </a>
+                </li>
+                @* Thêm các controller khác nếu cần: Roles, etc. *@
+                @* <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Roles" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Roles" asp-action="Index">
+                         <i class="fas fa-user-tag fa-fw me-2"></i> <span class="sidebar-link-text">Vai Trò (Roles)</span>
+                    </a>
+                </li> *@
+
+                <li class="nav-item mt-auto pt-3 border-top border-secondary">
+                    @* Đẩy xuống dưới cùng *@
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" target="_blank">
+                        @* Mở trang người dùng ở tab mới *@
+                        <i class="fas fa-external-link-alt fa-fw me-2"></i> <span class="sidebar-link-text">Xem Trang User</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- ========== End Sidebar ========== -->
+        <!-- ========== Main Content Wrapper ========== -->
+        <div id="admin-content-wrapper">
+
+            <!-- ========== Topbar ========== -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow-sm">
+
+                <!-- Sidebar Toggle (Mobile) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle me-3">
+                    @* Chỉ hiển thị trên mobile *@
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                @* Có thể thêm Search bar ở đây nếu muốn *@
+                @* <form class="d-none d-sm-inline-block form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-light border-0 small" placeholder="Tìm kiếm..."
+                               aria-label="Search" aria-describedby="basic-addon2">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </form> *@
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ms-auto">
+                    @* Đẩy sang phải *@
+
+                    @* Có thể thêm các icon thông báo, tin nhắn ở đây *@
+
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="me-2 d-none d-lg-inline text-gray-600 small">@User.Identity?.Name</span>
+                            <i class="fas fa-user-circle fa-lg"></i> @* Hoặc ảnh avatar *@
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
+                                Hồ sơ (Chưa làm)
+                            </a>
+                            @* <a class="dropdown-item" href="#">
+                                <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>
+                                Cài đặt (Chưa làm)
+                            </a> *@
+                            <div class="dropdown-divider"></div>
+                            @* Link Đăng xuất cần trỏ đúng Controller/Action xử lý Logout *@
+                            <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
+                                Đăng xuất
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- ========== End Topbar ========== -->
+            <!-- ========== Begin Page Content ========== -->
+            <main role="main" class="container-fluid p-4">
+                @* Thêm padding cho nội dung *@
+                @* Render thông báo nếu có (Giả sử bạn có _NotificationPartial.cshtml) *@
+                @Html.Partial("_NotificationPartial")
+                @RenderBody() @* Nơi nội dung của các trang Admin con được render *@
+            </main>
+            <!-- ========== End Page Content ========== -->
+            <!-- ========== Footer ========== -->
+            <footer class="sticky-footer bg-white shadow-sm">
+                @* Footer dính nếu muốn *@
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto text-muted small">
+                        <span>Bản quyền © TconShop Admin @DateTime.Now.Year</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- ========== End Footer ========== -->
+
+        </div>
+        <!-- ========== End Main Content Wrapper ========== -->
+
+    </div> @* End .admin-wrapper *@
+
+
+    @* --- SCRIPTS --- *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> @* Cần Bundle cho Dropdown và các thành phần khác *@
+
+    @* Script Admin tùy chỉnh (Cần tạo file này nếu chưa có) *@
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+
+    @* Render Scripts từ các trang con *@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ProductModel>
+@{
+    ViewData["Title"] = "Danh Sách Sản Phẩm";
+}
+<link href="~/css/admin.css" rel="stylesheet" asp-append-version="true" />
+<h3>Danh Sách Sản Phẩm</h3>
+<a asp-action="Create" asp-controller="Product" class="btn btn-primary mb-3">+ Thêm Sản Phẩm</a>
+
+<table class="table table-bordered table-striped" id="myTable">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Tên Sản Phẩm</th>
+            <th scope="col">Số Lượng</th>
+            <th scope="col">Đã bán</th>
+            <th scope="col">Mô Tả</th>
+            <th scope="col">Giá (VNĐ)</th>
+            <th scope="col">Hình Ảnh</th>
+            <th scope="col">Slug</th>
+            <th scope="col">Danh Mục</th>
+            <th scope="col">Thương Hiệu</th>
+            <th scope="col">Thao Tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.Id</th>
+                <td>@item.Name</td>
+				<td><b>@item.Quantity</b><br /><a asp-controller="Product" asp-action="AddQuantity" asp-route-Id="@item.Id">Thêm Số Lượng</a></td>
+                <td><b>@item.Sold</b></td>
+                <td>@item.Description</td>
+                <td>@item.Price.ToString("#,##0") đ</td>
+                <td>
+                    <img src="~/media/products/@item.Image" width="100" style="object-fit: contain;" alt="Ảnh sản phẩm" />
+                </td>
+                <td>@item.Slug</td>
+                <td>@item.Category?.Name</td>
+                <td>@item.Brand?.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Product" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="Delete" asp-controller="Product" asp-route-Id="@item.Id" class="btn btn-danger btn-sm confirmDeletion">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

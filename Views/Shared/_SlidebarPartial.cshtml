@@ -1,0 +1,15 @@
+﻿<div class="left-sidebar">
+    @* Sử dụng class của Bootstrap hoặc CSS tùy chỉnh để quản lý khoảng cách *@
+    <h2 class="sidebar-title">Danh Mục</h2>
+    <div class="category-list-container">
+        @* Thêm class để dễ target hơn *@
+        <vc:categories></vc:categories>
+    </div>
+
+    @* Thêm mt-4 nếu muốn khoảng cách lớn hơn hoặc để CSS xử lý *@
+    <h2 class="sidebar-title mt-4">Thương Hiệu</h2>
+    <div class="brand-list-container">
+        @* Thêm class để dễ target hơn *@
+        <vc:brands></vc:brands>
+    </div>
+</div>

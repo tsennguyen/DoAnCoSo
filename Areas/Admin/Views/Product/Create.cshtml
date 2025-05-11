@@ -1,0 +1,154 @@
+﻿@model ProductModel
+@{
+    ViewData["Title"] = "Thêm Sản Phẩm Mới";
+    // Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml"; // Đảm bảo Layout Admin
+}
+
+@* Thêm class "admin-create-product-container" và giới hạn chiều rộng nếu muốn *@
+<div class="col-md-9 admin-create-product-container mx-auto">
+    @* Thêm class này *@
+
+    <h4 class="mb-4 section-title">@ViewData["Title"]</h4>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        @* Thêm method="post" *@
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        @* Tên sản phẩm *@
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="form-label"></label> @* Dùng form-label *@
+            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" required /> @* Thêm required *@
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        @* Slug (Thường được tạo tự động từ Tên) - Có thể ẩn đi *@
+        @* <div class="form-group mb-3">
+            <label asp-for="Slug" class="form-label"></label>
+            <input asp-for="Slug" class="form-control" placeholder="Để trống sẽ tự động tạo" />
+            <span asp-validation-for="Slug" class="text-danger"></span>
+        </div> *@
+
+        @* Giá bán *@
+        <div class="form-group mb-3">
+            <label asp-for="Price" class="form-label">Giá bán (VNĐ)</label>
+            <input asp-for="Price" type="number" step="1000" min="0" class="form-control tying-price" placeholder="Ví dụ: 1200000" required />
+            <span id="price-convert" class="form-text text-primary fw-bold mt-1 d-block"></span> @* Hiển thị giá định dạng *@
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        @* Số lượng tồn kho *@
+        <div class="form-group mb-3">
+            <label asp-for="Quantity" class="form-label">Số lượng tồn kho</label>
+            <input asp-for="Quantity" type="number" min="0" class="form-control" required />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        @* Mô tả *@
+        <div class="form-group mb-3">
+            <label asp-for="Description" class="form-label">Mô tả sản phẩm</label>
+            @* Cân nhắc dùng Rich Text Editor *@
+            <textarea asp-for="Description" class="form-control" rows="6" placeholder="Mô tả chi tiết sản phẩm..."></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        @* Danh mục *@
+        <div class="form-group mb-3">
+            <label asp-for="CategoryId" class="form-label">Danh mục</label>
+            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories" required>
+                @* Dùng form-select *@
+                <option value="" selected disabled>-- Chọn danh mục --</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        @* Thương hiệu *@
+        <div class="form-group mb-3">
+            <label asp-for="BrandId" class="form-label">Thương hiệu</label>
+            <select asp-for="BrandId" class="form-select" asp-items="ViewBag.Brands" required>
+                @* Dùng form-select *@
+                <option value="" selected disabled>-- Chọn thương hiệu --</option>
+            </select>
+            <span asp-validation-for="BrandId" class="text-danger"></span>
+        </div>
+
+        @* Ảnh sản phẩm *@
+        <div class="form-group mb-4">
+            <label asp-for="ImageUpload" class="form-label">Ảnh sản phẩm*</label>
+            <input asp-for="ImageUpload" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" required /> @* Thêm required và type="file" *@
+            <span asp-validation-for="ImageUpload" class="text-danger"></span>
+            <div class="mt-2 new-image-preview-section" style="display: none;">
+                @* Đổi tên class và ẩn *@
+                <label class="form-label form-label-sm mb-1">Xem trước ảnh:</label><br />
+                <img id="imgpreview" src="#" class="img-thumbnail new-product-image-preview" alt="Xem trước ảnh" /> @* Thêm class *@
+            </div>
+        </div>
+
+        @* Nút Submit và Quay lại *@
+        <div class="form-group mt-4 d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-plus me-1"></i> Thêm Sản Phẩm
+            </button>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">
+                @* Trỏ đúng controller *@
+                <i class="fa fa-arrow-left me-1"></i> Quay lại danh sách
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @* Script xem trước ảnh (giống trang Edit) *@
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('imgpreview');
+            const previewContainer = document.querySelector('.new-image-preview-section');
+
+            if (input.files && input.files[0]) {
+                 // Kiểm tra kích thước file (ví dụ: giới hạn 5MB)
+                 const fileSize = input.files[0].size / 1024 / 1024; // in MB
+                 if (fileSize > 5) {
+                     alert('Kích thước ảnh quá lớn (tối đa 5MB). Vui lòng chọn ảnh khác.');
+                     input.value = ''; // Xóa file đã chọn
+                     preview.src = '#';
+                     previewContainer.style.display = 'none';
+                     return;
+                 }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block'; // Hiện khu vực xem trước
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '#';
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
+
+    @* Script định dạng giá tiền (giống trang Edit) *@
+    <script>
+        $(document).ready(function() {
+             function formatPriceDisplay(inputValue) {
+                 let numberValue = inputValue.replace(/[^0-9]/g, '');
+                 if (numberValue) {
+                     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(numberValue);
+                 }
+                 return '';
+             }
+            $(".tying-price").on("input", function() {
+                let rawValue = $(this).val();
+                $("#price-convert").html(formatPriceDisplay(rawValue));
+            });
+        });
+    </script>
+
+    @* Script cho Rich Text Editor (nếu dùng) *@
+    @* <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script> *@
+    @* <script> CKEDITOR.replace('Description'); </script> *@
+}

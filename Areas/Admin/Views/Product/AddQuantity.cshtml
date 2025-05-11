@@ -1,0 +1,97 @@
+﻿@model ProductQuantityModel
+@{
+    ViewData["Title"] = "Thêm Số Lượng Cho Sản Phẩm";
+    // Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml"; // Đảm bảo Layout Admin
+    var total_quantities = 0;
+    var key = 1;
+    var productName = ViewBag.ProductName ?? "Sản phẩm"; // Lấy tên SP từ ViewBag nếu có
+    var currentQuantity = ViewBag.CurrentQuantity ?? 0; // Lấy số lượng hiện tại nếu có
+}
+
+@* Sử dụng container riêng và giới hạn chiều rộng *@
+<div class="admin-add-quantity-container col-md-10 col-lg-8 mx-auto my-4"> @* mx-auto căn giữa *@
+
+    <h4 class="mb-3 section-title">@ViewData["Title"]</h4>
+    <h5 class="mb-4 text-primary">Sản phẩm: @productName</h5>
+    <p><strong>Số lượng hiện tại:</strong> @currentQuantity</p>
+
+    @* --- Form Thêm Số Lượng Mới --- *@
+    <div class="add-quantity-form-section border rounded p-3 mb-4 bg-light">
+        <form asp-action="StoreProductQuantity" asp-controller="Product" method="post"> @* Thêm method="post" *@
+            <input type="hidden" asp-for="ProductId" value="@ViewBag.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row align-items-end"> @* Đặt input và nút trên cùng hàng *@
+                <div class="col-sm-8">
+                    <label asp-for="Quantity" class="form-label form-label-sm">Số lượng muốn thêm*</label>
+                    <input asp-for="Quantity" type="number" min="1" value="1" max="1000" class="form-control form-control-sm" required />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                        <i class="fa fa-plus me-1"></i> Thêm Số Lượng
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div> @* --- Kết thúc Form --- *@
+
+
+    @* --- Lịch sử Thêm Số Lượng --- *@
+    <div class="quantity-history-section mt-5">
+        <h5 class="mb-3 section-subtitle">Lịch sử Thêm Số Lượng</h5>
+
+        @if (ViewBag.ProductByQuantity != null && ((IEnumerable<dynamic>)ViewBag.ProductByQuantity).Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle admin-table" id="quantityHistoryTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 10%;">STT</th>
+                            <th scope="col" class="text-center" style="width: 40%;">Số Lượng Đã Thêm</th>
+                            <th scope="col" style="width: 50%;">Thời Gian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var productQuantity in ViewBag.ProductByQuantity)
+                        {
+                            total_quantities += productQuantity.Quantity;
+                            <tr>
+                                <td class="text-center">@key</td>
+                                <td class="text-center fw-bold">@productQuantity.Quantity</td>
+                                <td>@productQuantity.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")</td> @* Format ngày giờ đầy đủ *@
+                            </tr>
+                            key++;
+                        }
+                        @* Dòng tổng kết *@
+                         <tr class="table-info"> @* Highlight dòng tổng *@
+                             <td colspan="2" class="text-end fw-bold">Tổng Số Lượng Đã Thêm:</td>
+                             <td class="fw-bold">@total_quantities</td>
+                         </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+             <div class="alert alert-secondary">Chưa có lịch sử thêm số lượng nào cho sản phẩm này.</div>
+        }
+    </div> @* --- Kết thúc Lịch sử --- *@
+
+
+    @* Link Quay lại *@
+    <div class="mt-4">
+        <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">
+            <i class="fa fa-arrow-left me-1"></i> Quay lại danh sách sản phẩm
+        </a>
+    </div>
+
+</div> @* End Container *@
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @* Có thể thêm script nếu cần xử lý gì thêm *@
+}
